@@ -1,3 +1,20 @@
 <resources>
-<string name="app_name">ConatusApp</string>
+    <string name="app_name">ConatusApp</string>
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_close">Drawer Close</string>
+
+    <array name="drawer_menu" >
+        <item>Editorial</item>
+        <item>Magzines</item>
+        <item>Events</item>
+        <item>Gallery</item>
+        <item>Team members</item>
+        <item>Alumni</item>
+        <item>Query Us</item>
+        <item>About Us</item>
+        <item>Contact Us</item>
+    </array>
+
+
+
 </resources>

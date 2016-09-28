@@ -1,0 +1,23 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/drawerBackgroundColor"
+    tools:context="com.example.money.conatusapp.NavigationDrawer.NavigationDrawerFragment">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawer_image_height"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/conatus"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:id="@+id/drawer_recycler_view"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
+
+
+
+
+</RelativeLayout>
