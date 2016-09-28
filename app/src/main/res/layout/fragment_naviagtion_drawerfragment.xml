@@ -7,6 +7,7 @@
 
     <ImageView
         android:layout_width="match_parent"
+        android:id="@+id/drawerImage"
         android:layout_height="@dimen/drawer_image_height"
         android:layout_alignParentTop="true"
         android:src="@drawable/conatus"/>
@@ -14,6 +15,7 @@
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:id="@+id/drawer_recycler_view"
+        android:layout_below="@id/drawerImage"
         android:layout_height="match_parent">
     </android.support.v7.widget.RecyclerView>
 

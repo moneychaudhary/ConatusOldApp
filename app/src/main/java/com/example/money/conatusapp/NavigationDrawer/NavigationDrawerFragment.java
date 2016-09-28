@@ -17,6 +17,9 @@ import android.view.ViewGroup;
 
 import com.example.money.conatusapp.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 
 public class NavigationDrawerFragment extends Fragment {
@@ -46,10 +49,22 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View layout=inflater.inflate(R.layout.fragment_naviagtion_drawerfragment, container, false);
-        drawerRecyclerView.setLayoutManager( new LinearLayoutManager(getActivity()));
-        drawerRecyclerView.setAdapter(new DrawerRecyclerViewAdapter(getActivity()));
+        View layout = inflater.inflate(R.layout.fragment_naviagtion_drawerfragment, container, false);
+        drawerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        drawerRecyclerView.setAdapter(new DrawerRecyclerViewAdapter(getActivity(), getList()));
         return layout;
+    }
+
+    public List<DrawerMenu> getList() {
+        List<DrawerMenu> list = new ArrayList<>();
+        String title[] = getResources().getStringArray(R.array.drawer_menu);
+        int imageid[] = {R.drawable.timeline, R.drawable.magzine, R.drawable.events, R.drawable.gallery, R.drawable.team, R.drawable.alumni, R.drawable.query, R.drawable.about, R.drawable.contact};
+        for (int i = 0; i < title.length; i++) {
+            DrawerMenu menu = new DrawerMenu(title[i], imageid[i]);
+            list.add(menu);
+        }
+        return list;
     }
 
 
