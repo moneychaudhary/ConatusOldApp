@@ -1,7 +1,9 @@
 package com.example.money.conatusapp.NavigationDrawer;
 
+import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,19 +20,22 @@ import java.util.List;
  */
 public class DrawerRecyclerViewAdapter extends RecyclerView.Adapter<DrawerRecyclerViewHolder> {
 
-    private FragmentActivity mFragmentActivity;
+    private Context mCotext;
     private List<DrawerMenu> mMenuList;
-    public DrawerRecyclerViewAdapter(FragmentActivity activity,  List<DrawerMenu> list) {
-        mFragmentActivity=activity;
-        this.mMenuList=list;
+
+    public DrawerRecyclerViewAdapter(Context context, List<DrawerMenu> list) {
+        mCotext = context;
+        this.mMenuList = list;
+        Log.d("money", mMenuList.get(0).getTitle());
+
 
     }
 
     @Override
     public DrawerRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflator= LayoutInflater.from(mFragmentActivity);
-        View view= inflator.inflate(R.layout.navdrawer_recycler_view_layout,parent,false);
-        return new DrawerRecyclerViewHolder(view,mFragmentActivity);
+        LayoutInflater inflator = LayoutInflater.from(mCotext);
+        View view = inflator.inflate(R.layout.navdrawer_recycler_view_layout, parent, false);
+        return new DrawerRecyclerViewHolder(view, mCotext);
 
     }
 

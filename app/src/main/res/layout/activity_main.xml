@@ -16,20 +16,27 @@
             layout="@layout/toolbar_mainpage" />
 
         <FrameLayout
+            android:id="@+id/container_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
-        </FrameLayout>
-    </LinearLayout>
+
+        <fragment
+            android:layout_width="match_parent"
+            android:id="@+id/main_fragment"
+            android:layout_height="match_parent"></fragment>
+
+    </FrameLayout>
+</LinearLayout>
 
 
-    <fragment
-        android:id="@+id/navFragment"
-        android:name="com.example.money.conatusapp.NavigationDrawer.NavigationDrawerFragment"
-        android:layout_width="@dimen/drawer_width"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        tools:layout="@layout/fragment_naviagtion_drawerfragment" />
+<fragment
+android:id="@+id/navFragment"
+android:name="com.example.money.conatusapp.NavigationDrawer.NavigationDrawerFragment"
+layout="@layout/fragment_naviagtion_drawerfragment"
+android:layout_width="@dimen/drawer_width"
+android:layout_height="match_parent"
+android:layout_gravity="start"
+tools:layout="@layout/fragment_naviagtion_drawerfragment" />
 
 
-</android.support.v4.widget.DrawerLayout>
+    </android.support.v4.widget.DrawerLayout>

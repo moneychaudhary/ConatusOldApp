@@ -5,15 +5,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.money.conatusapp.R;
 
@@ -31,8 +36,7 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFirstTimeDrawerOpened;
     private boolean mFromSaveInstance;
     private View mDrawerContainerView;
-    @BindView(R.id.drawer_recycler_view)
-    RecyclerView drawerRecyclerView;
+    private RecyclerView drawerRecyclerView;
 
     public NavigationDrawerFragment() {
     }
@@ -40,26 +44,37 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mFirstTimeDrawerOpened = Boolean.valueOf(getDataFromSharedPreferences(getActivity(), DRAWER_COUNT, "false"));
         if (savedInstanceState == null) {
             mFromSaveInstance = true;
         }
     }
 
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_naviagtion_drawerfragment, container, false);
-        drawerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        View rootView = inflater.inflate(R.layout.fragment_naviagtion_drawerfragment, container);
+        drawerRecyclerView = (RecyclerView) rootView.findViewById(R.id.drawer_recycler_view);
         drawerRecyclerView.setAdapter(new DrawerRecyclerViewAdapter(getActivity(), getList()));
-        return layout;
+        drawerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        return rootView;
+
     }
 
     public List<DrawerMenu> getList() {
         List<DrawerMenu> list = new ArrayList<>();
         String title[] = getResources().getStringArray(R.array.drawer_menu);
-        int imageid[] = {R.drawable.timeline, R.drawable.magzine, R.drawable.events, R.drawable.gallery, R.drawable.team, R.drawable.alumni, R.drawable.query, R.drawable.about, R.drawable.contact};
+        int imageid[] = {R.drawable.timeline, R.drawable.magzine, R.drawable.events,
+                R.drawable.gallery, R.drawable.team, R.drawable.alumni, R.drawable.about, R.drawable.contact};
         for (int i = 0; i < title.length; i++) {
             DrawerMenu menu = new DrawerMenu(title[i], imageid[i]);
             list.add(menu);

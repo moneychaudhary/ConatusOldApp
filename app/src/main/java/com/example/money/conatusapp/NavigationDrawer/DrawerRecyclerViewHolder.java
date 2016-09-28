@@ -1,6 +1,8 @@
 package com.example.money.conatusapp.NavigationDrawer;
 
+import android.content.Context;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,15 +15,26 @@ import butterknife.BindView;
 /**
  * Created by #money on 9/28/2016.
  */
-public class DrawerRecyclerViewHolder extends RecyclerView.ViewHolder{
-    private FragmentActivity mFragmentActivity;
-    @BindView(R.id.menu_title)
-    TextView titleView;
-    @BindView(R.id.menu_icon_image)
+public class DrawerRecyclerViewHolder extends RecyclerView.ViewHolder {
+    private Context mContext;
+    public TextView titleView;
     public ImageView iconView;
 
-    public DrawerRecyclerViewHolder(View itemView ,FragmentActivity activity) {
+    public DrawerRecyclerViewHolder(View itemView, Context context) {
         super(itemView);
-        this.mFragmentActivity=activity;
+        this.mContext = context;
+        titleView = (TextView) itemView.findViewById(R.id.menu_title);
+        iconView = (ImageView) itemView.findViewById(R.id.menu_icon_image);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(titleView.getText().equals("About Us")))
+                {
+
+
+                }
+            }
+        });
     }
 }
