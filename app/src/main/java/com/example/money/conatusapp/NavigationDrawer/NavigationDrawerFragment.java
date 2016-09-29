@@ -1,8 +1,6 @@
 package com.example.money.conatusapp.NavigationDrawer;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,10 +24,6 @@ public class NavigationDrawerFragment extends Fragment implements NavDrawerClick
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationDrawerActivityListner listner;
     private DrawerLayout mDrawerLayout;
-    private final static String SHARED_PREFERENCE_FILE_NAME = "datafile";
-    private final static String DRAWER_COUNT = "count";
-    private boolean mFirstTimeDrawerOpened;
-    private boolean mFromSaveInstance;
     private View mDrawerContainerView;
     private RecyclerView drawerRecyclerView;
 
@@ -40,10 +34,6 @@ public class NavigationDrawerFragment extends Fragment implements NavDrawerClick
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mFirstTimeDrawerOpened = Boolean.valueOf(getDataFromSharedPreferences(getActivity(), DRAWER_COUNT, "false"));
-        if (savedInstanceState != null) {
-            mFromSaveInstance = true;
-        }
     }
 
 
@@ -84,32 +74,7 @@ public class NavigationDrawerFragment extends Fragment implements NavDrawerClick
         mDrawerContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-
-                if (!mFirstTimeDrawerOpened) {
-                    mFirstTimeDrawerOpened = true;
-                    saveDataToSharedPreferences(getActivity(), DRAWER_COUNT, String.valueOf(mFirstTimeDrawerOpened));
-                }
-                getActivity().invalidateOptionsMenu();
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                getActivity().invalidateOptionsMenu();
-
-            }
-
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-
-            }
         };
-        if (!mFirstTimeDrawerOpened && !mFromSaveInstance) {
-            mDrawerLayout.openDrawer(mDrawerContainerView);
-        }
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerLayout.post(new Runnable() {
             @Override
@@ -119,18 +84,6 @@ public class NavigationDrawerFragment extends Fragment implements NavDrawerClick
         });
     }
 
-    public static void saveDataToSharedPreferences(Context context, String preferenceName, String preferenceValue) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(preferenceName, preferenceValue);
-        editor.apply();
-
-    }
-
-    public static String getDataFromSharedPreferences(Context context, String preferenceName, String defaultValue) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(preferenceName, defaultValue);
-    }
 
     @Override
     public void onNavMenuClicked(View view, int position) {

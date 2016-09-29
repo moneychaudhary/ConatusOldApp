@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ConatusApp</string>
+    <string name="app_name">Conatus</string>
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
     <string name="about_us">About us</string>
@@ -21,8 +21,8 @@
         <item>Contact Us</item>
     </array>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_activity_splash_screen">Conatus</string>
 
 
 </resources>
