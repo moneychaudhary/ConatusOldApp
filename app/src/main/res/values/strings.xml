@@ -8,12 +8,11 @@
 
 
     <array name="drawer_menu">
-        <item>Editorial</item>
-        <item>Magzines</item>
+        <item>Home</item>
         <item>Events</item>
+        <item>Magazines</item>
         <item>Gallery</item>
-        <item>Team members</item>
-        <item>Alumni</item>
+        <item>Our Team</item>
         <item>About Us</item>
         <item>Contact Us</item>
     </array>
