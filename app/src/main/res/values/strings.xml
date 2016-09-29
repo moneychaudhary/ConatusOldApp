@@ -7,6 +7,10 @@
     <string name="about_us_para1">Conatus is the technical society of Computer Science and Information Technology in Ajay Kumar Garg Engineering College which brings to its students the illumination of the knowledge glow in IT sphere with its marvelous events, workshops and seminars. Founded on 10th October, 2005 by a group of 5 members Kumar Vishal, Ankit Garg, Ankit Mittal, Kapil Nawani and Animesh Roy, Conatus’ functioning is firmly supported by Prof. B. M. Kalra, HOD CSE, and our faculty coordinator, Ms. Mamta Bhusry.</string>
 
 
+    <string-array name="team_view_pager_title">
+        <item>MENTORS</item>
+        <item>TEAM</item>
+    </string-array>
     <array name="drawer_menu">
         <item>Home</item>
         <item>Events</item>
