@@ -1,16 +1,12 @@
 package com.example.money.conatusapp.NavigationDrawer;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.money.conatusapp.R;
-
-import butterknife.BindView;
 
 /**
  * Created by #money on 9/28/2016.
@@ -29,11 +25,7 @@ public class DrawerRecyclerViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
 
-                if(titleView.getText().equals("About Us")))
-                {
 
-
-                }
             }
         });
     }
