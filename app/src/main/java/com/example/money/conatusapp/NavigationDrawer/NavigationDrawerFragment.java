@@ -60,7 +60,9 @@ public class NavigationDrawerFragment extends Fragment implements NavDrawerClick
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_naviagtion_drawerfragment, container);
         drawerRecyclerView = (RecyclerView) rootView.findViewById(R.id.drawer_recycler_view);
-        drawerRecyclerView.setAdapter(new DrawerRecyclerViewAdapter(getActivity(), getList()));
+        DrawerRecyclerViewAdapter adapter = new DrawerRecyclerViewAdapter(getActivity(), getList());
+        adapter.setNavDrawerClickListner(this);
+        drawerRecyclerView.setAdapter(adapter);
         drawerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return rootView;
 
