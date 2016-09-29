@@ -1,7 +1,6 @@
 package com.example.money.conatusapp.NavigationDrawer;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,15 +9,13 @@ import android.view.ViewGroup;
 
 import com.example.money.conatusapp.R;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by #money on 9/28/2016.
  */
 public class DrawerRecyclerViewAdapter extends RecyclerView.Adapter<DrawerRecyclerViewHolder> {
+    public static NavDrawerClickListner listner;
 
     private Context mCotext;
     private List<DrawerMenu> mMenuList;
@@ -29,6 +26,10 @@ public class DrawerRecyclerViewAdapter extends RecyclerView.Adapter<DrawerRecycl
         Log.d("money", mMenuList.get(0).getTitle());
 
 
+    }
+
+    public void setNavDrawerClickListner(NavDrawerClickListner listner) {
+        this.listner = listner;
     }
 
     @Override
@@ -43,6 +44,7 @@ public class DrawerRecyclerViewAdapter extends RecyclerView.Adapter<DrawerRecycl
     public void onBindViewHolder(DrawerRecyclerViewHolder holder, int position) {
         holder.iconView.setImageResource(mMenuList.get(position).getImageid());
         holder.titleView.setText(mMenuList.get(position).getTitle());
+        holder.position = position;
     }
 
     @Override

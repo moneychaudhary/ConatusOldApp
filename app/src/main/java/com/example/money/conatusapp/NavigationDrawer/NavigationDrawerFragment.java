@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import java.util.List;
 
 ;
 
-public class NavigationDrawerFragment extends Fragment {
+public class NavigationDrawerFragment extends Fragment implements NavDrawerClickListner {
     private ActionBarDrawerToggle mDrawerToggle;
 
     private DrawerLayout mDrawerLayout;
@@ -130,5 +131,10 @@ public class NavigationDrawerFragment extends Fragment {
     public static String getDataFromSharedPreferences(Context context, String preferenceName, String defaultValue) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(preferenceName, defaultValue);
+    }
+
+    @Override
+    public void onNavMenuClicked(View view, int position) {
+        Log.d("money", "" + position);
     }
 }

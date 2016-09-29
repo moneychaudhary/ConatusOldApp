@@ -15,6 +15,7 @@ public class DrawerRecyclerViewHolder extends RecyclerView.ViewHolder {
     private Context mContext;
     public TextView titleView;
     public ImageView iconView;
+    public int position;
 
     public DrawerRecyclerViewHolder(View itemView, Context context) {
         super(itemView);
@@ -24,7 +25,7 @@ public class DrawerRecyclerViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DrawerRecyclerViewAdapter.listner.onNavMenuClicked(v, position);
 
             }
         });
