@@ -3,6 +3,8 @@
     android:id="@+id/navbar_recycler_view_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/custom_background"
+    android:clickable="true"
     android:orientation="horizontal"
     android:padding="10dp">
 

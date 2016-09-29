@@ -11,7 +11,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,7 @@ import java.util.List;
 
 public class NavigationDrawerFragment extends Fragment implements NavDrawerClickListner {
     private ActionBarDrawerToggle mDrawerToggle;
-
+    private NavigationDrawerActivityListner listner;
     private DrawerLayout mDrawerLayout;
     private final static String SHARED_PREFERENCE_FILE_NAME = "datafile";
     private final static String DRAWER_COUNT = "count";
@@ -105,9 +104,7 @@ public class NavigationDrawerFragment extends Fragment implements NavDrawerClick
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
-                if (slideOffset < 0.6) {
-                    toolbar.setAlpha(1 - slideOffset);
-                }
+
             }
         };
         if (!mFirstTimeDrawerOpened && !mFromSaveInstance) {
@@ -137,6 +134,14 @@ public class NavigationDrawerFragment extends Fragment implements NavDrawerClick
 
     @Override
     public void onNavMenuClicked(View view, int position) {
-        Log.d("money", "" + position);
+        if (listner != null) {
+            listner.onItemClickedInDrawer(view, position);
+            mDrawerLayout.closeDrawer(mDrawerContainerView);
+        }
+    }
+
+    public void setOnNavigationDrawerActivityListner(NavigationDrawerActivityListner listner) {
+        this.listner = listner;
     }
 }
+

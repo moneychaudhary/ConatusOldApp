@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#E0E0E0</color>
     <color name="colorAccent">#50514F</color>
     <color name="drawerBackgroundColor">#ffffff</color>
+    <color name="rippleColor">#e1d9d9</color>
+    <color name="backgroundColor">#fafafa</color>
 </resources>
