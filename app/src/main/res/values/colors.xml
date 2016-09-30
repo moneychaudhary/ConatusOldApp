@@ -6,4 +6,6 @@
     <color name="drawerBackgroundColor">#ffffff</color>
     <color name="rippleColor">#e1d9d9</color>
     <color name="backgroundColor">#fafafa</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>
