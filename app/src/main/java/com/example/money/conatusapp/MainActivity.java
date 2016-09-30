@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 
 import com.example.money.conatusapp.NavigationDrawer.NavigationDrawerActivityListner;
@@ -29,6 +30,12 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerA
     private final static String TEAM_FRAGMENT = "team";
     private final static String ABOUT_FRAGMENT = "about";
     private final static String CONTACT_FRAGMENT = "contact";
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.maintoolbar_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
