@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.money.conatusapp.TeamMembers.CurrentTeamFragment">
+    tools:context="com.example.money.conatusapp.TeamMembers.currentTeam.CurrentTeamFragment">
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/current_team_recyclerview" />
+        android:id="@+id/members_list" />
 
 
 </FrameLayout>

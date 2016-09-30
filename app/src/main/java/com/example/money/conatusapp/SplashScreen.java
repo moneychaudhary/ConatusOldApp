@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 public class SplashScreen extends AppCompatActivity {
+    private static final int DELAY_TIME = 3000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,7 +17,8 @@ public class SplashScreen extends AppCompatActivity {
             public void run() {
                 Intent intent = new Intent(SplashScreen.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
-        }, 3000);
+        }, DELAY_TIME);
     }
 }
