@@ -65,7 +65,7 @@ public class DrawerRecyclerViewAdapter extends RecyclerView.Adapter<DrawerRecycl
                 @Override
                 public void onClick(View v) {
                     if (listner != null)
-                        listner.onNavMenuClicked(v, position);
+                        listner.onNavMenuClicked(position);
 
                 }
             });

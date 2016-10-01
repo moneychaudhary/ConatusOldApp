@@ -13,7 +13,6 @@ import android.view.ViewGroup;
  */
 public class MagzineFragment extends Fragment {
 
-
     public MagzineFragment() {
         // Required empty public constructor
     }
@@ -23,6 +22,7 @@ public class MagzineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_magzine, container, false);
     }
 

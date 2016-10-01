@@ -3,7 +3,7 @@ package com.example.money.conatusapp.TeamMembers;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.money.conatusapp.R;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * Created by #money on 9/29/2016.
  */
 
-public class ViewPagerAdapter extends FragmentPagerAdapter {
+public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     private List<Fragment> list;
     private String[] title;
 

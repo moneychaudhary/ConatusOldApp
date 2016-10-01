@@ -85,11 +85,12 @@ public class NavigationDrawerFragment extends Fragment implements NavDrawerClick
     }
 
 
+
     @Override
-    public void onNavMenuClicked(View view, int position) {
+    public void onNavMenuClicked(int position) {
         if (listner != null) {
-            listner.onItemClickedInDrawer(view, position);
             mDrawerLayout.closeDrawer(mDrawerContainerView);
+            listner.onItemClickedInDrawer(position);
         }
     }
 
