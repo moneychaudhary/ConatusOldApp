@@ -1,18 +1,13 @@
 package com.example.money.conatusapp.TeamMembers.currentTeam;
 
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.money.conatusapp.Animations.AnimationUtils;
@@ -20,8 +15,9 @@ import com.example.money.conatusapp.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,21 +58,7 @@ public class CurrentTeamFragment extends Fragment {
                 viewHolder.memberBranch.setText(model.getBranch());
                 viewHolder.memberYear.setText(model.getYear() + "rd Year");
                 viewHolder.memberDomain.setText(model.getDomain());
-                Picasso.with(getActivity()).load(model.getImage()).resize(130, 130).into(viewHolder.memberImage, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        Bitmap imageBitmap = ((BitmapDrawable) viewHolder.memberImage.getDrawable()).getBitmap();
-                        RoundedBitmapDrawable imageDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
-                        imageDrawable.setCircular(true);
-                        imageDrawable.setCornerRadius(Math.max(imageBitmap.getWidth(), imageBitmap.getHeight()) / 2.0f);
-                        viewHolder.memberImage.setImageDrawable(imageDrawable);
-                    }
-
-                    @Override
-                    public void onError() {
-
-                    }
-                });
+                Picasso.with(getActivity()).load(model.getImage()).noFade().resize(130, 130).into(viewHolder.memberImage);
                 if (position > previousPosition) {
                     AnimationUtils.animate(viewHolder, true);
                 } else {
@@ -95,7 +77,7 @@ public class CurrentTeamFragment extends Fragment {
         public TextView memberBranch;
         public TextView memberYear;
         public TextView memberDomain;
-        public ImageView memberImage;
+        public CircleImageView memberImage;
 
         public MemberViewHolder(View itemView) {
             super(itemView);
@@ -103,7 +85,7 @@ public class CurrentTeamFragment extends Fragment {
             memberBranch = (TextView) itemView.findViewById(R.id.member_branch);
             memberYear = (TextView) itemView.findViewById(R.id.member_year);
             memberDomain = (TextView) itemView.findViewById(R.id.member_domain);
-            memberImage = (ImageView) itemView.findViewById(R.id.member_image);
+            memberImage = (CircleImageView) itemView.findViewById(R.id.member_image);
         }
     }
 
