@@ -17,7 +17,6 @@ import java.util.List;
 
 import Tabs.SlidingTabLayout;
 
-
 public class TeamFragment extends Fragment {
 
     private SlidingTabLayout mTabs;

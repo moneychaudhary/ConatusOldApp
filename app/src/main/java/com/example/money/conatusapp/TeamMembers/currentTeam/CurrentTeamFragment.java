@@ -1,8 +1,12 @@
 package com.example.money.conatusapp.TeamMembers.currentTeam;
 
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +20,7 @@ import com.example.money.conatusapp.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -52,16 +57,28 @@ public class CurrentTeamFragment extends Fragment {
                 MemberViewHolder.class,
                 mDatabase) {
             @Override
-            protected void populateViewHolder(MemberViewHolder viewHolder, Member model, int position) {
+            protected void populateViewHolder(final MemberViewHolder viewHolder, Member model, int position) {
                 viewHolder.memberNameField.setText(model.getName());
                 viewHolder.memberBranch.setText(model.getBranch());
                 viewHolder.memberYear.setText(model.getYear() + "rd Year");
                 viewHolder.memberDomain.setText(model.getDomain());
-                Picasso.with(getActivity()).load(model.getImage()).resize(160, 160).into(viewHolder.memberImage);
+                Picasso.with(getActivity()).load(model.getImage()).resize(130, 130).into(viewHolder.memberImage, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Bitmap imageBitmap = ((BitmapDrawable) viewHolder.memberImage.getDrawable()).getBitmap();
+                        RoundedBitmapDrawable imageDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
+                        imageDrawable.setCircular(true);
+                        imageDrawable.setCornerRadius(Math.max(imageBitmap.getWidth(), imageBitmap.getHeight()) / 2.0f);
+                        viewHolder.memberImage.setImageDrawable(imageDrawable);
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
                 if (position > previousPosition) {
                     AnimationUtils.animate(viewHolder, true);
-
-
                 } else {
 
                     AnimationUtils.animate(viewHolder, false);

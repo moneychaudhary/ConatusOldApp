@@ -60,8 +60,8 @@ public class NavigationDrawerFragment extends Fragment implements NavDrawerClick
     public List<DrawerMenu> getList() {
         List<DrawerMenu> list = new ArrayList<>();
         String title[] = getResources().getStringArray(R.array.drawer_menu);
-        int imageid[] = {R.drawable.timeline, R.drawable.events, R.drawable.magzine,
-                R.drawable.gallery, R.drawable.team, R.drawable.about, R.drawable.contact};
+        int imageid[] = {R.mipmap.ic_home_black_24dp, R.mipmap.ic_event_black_24dp, R.mipmap.ic_book_black_24dp,
+                R.mipmap.ic_wallpaper_black_24dp, R.mipmap.ic_group_black_24dp, R.mipmap.ic_help_outline_black_24dp, R.mipmap.ic_contact_mail_black_24dp};
         for (int i = 0; i < title.length; i++) {
             DrawerMenu menu = new DrawerMenu(title[i], imageid[i]);
             list.add(menu);

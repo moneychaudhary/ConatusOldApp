@@ -6,6 +6,7 @@
     android:background="@drawable/custom_background"
     android:clickable="true"
     android:orientation="horizontal"
+    android:layout_marginLeft="20dp"
     android:padding="10dp">
 
 
@@ -19,7 +20,7 @@
         android:id="@+id/menu_title"
         android:layout_width="0dp "
         android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="10dp"
         android:layout_weight="4"
         android:padding="@dimen/drawer_text_padding"
         android:textSize="@dimen/drawer_text_size" />
