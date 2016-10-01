@@ -3,7 +3,6 @@ package com.example.money.conatusapp;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -52,10 +51,8 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerA
         setSupportActionBar(mMainToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mFragmentManager = getSupportFragmentManager();
-        mTeamFragment = new TeamFragment();
-        FragmentTransaction transaction = mFragmentManager.beginTransaction();
         mHomeFragment = new HomeFragment();
-        transaction.add(R.id.container_frame, mHomeFragment, HOME_FRAGMENT).addToBackStack(HOME_FRAGMENT).commit();
+        mFragmentManager.beginTransaction().add(R.id.container_frame, mHomeFragment, HOME_FRAGMENT).addToBackStack(HOME_FRAGMENT).commit();
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navFragment);
         mNavigationDrawerFragment.setOnNavigationDrawerActivityListner(this);
         mNavigationDrawerFragment.setUp(R.id.navFragment, (DrawerLayout) findViewById(R.id.main_page_drawer), mMainToolbar);
@@ -70,65 +67,44 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerA
             case 0:
                 mMainToolbar.setTitle("Conatus");
                 if (mHomeFragment != null)
-                    mFragmentManager.beginTransaction().replace(R.id.container_frame, mHomeFragment, HOME_FRAGMENT).addToBackStack(HOME_FRAGMENT).commit();
-                else {
                     mHomeFragment = new HomeFragment();
-                    mFragmentManager.beginTransaction().add(R.id.container_frame, mHomeFragment, HOME_FRAGMENT).addToBackStack(HOME_FRAGMENT).commit();
-                }
+                mFragmentManager.beginTransaction().replace(R.id.container_frame, mHomeFragment, HOME_FRAGMENT).addToBackStack(HOME_FRAGMENT).commit();
                 break;
             case 1:
                 mMainToolbar.setTitle("Events");
-                if (mEventsFragment != null)
-                    mFragmentManager.beginTransaction().replace(R.id.container_frame, mEventsFragment, EVENT_FRAGMENT).addToBackStack(EVENT_FRAGMENT).commit();
-                else {
+                if (mEventsFragment == null)
                     mEventsFragment = new EventsFragment();
-                    mFragmentManager.beginTransaction().add(R.id.container_frame, mEventsFragment, EVENT_FRAGMENT).addToBackStack(EVENT_FRAGMENT).commit();
-                }
+                mFragmentManager.beginTransaction().replace(R.id.container_frame, mEventsFragment, EVENT_FRAGMENT).addToBackStack(EVENT_FRAGMENT).commit();
                 break;
             case 2:
                 mMainToolbar.setTitle("Magazine");
-                if (mMagazineFragment != null)
-                    mFragmentManager.beginTransaction().replace(R.id.container_frame, mMagazineFragment, MAGAZINE_FRAGMENT).addToBackStack(MAGAZINE_FRAGMENT).commit();
-                else {
+                if (mMagazineFragment == null)
                     mMagazineFragment = new MagzineFragment();
-                    mFragmentManager.beginTransaction().add(R.id.container_frame, mMagazineFragment, MAGAZINE_FRAGMENT).addToBackStack(MAGAZINE_FRAGMENT).commit();
-                }
+                mFragmentManager.beginTransaction().replace(R.id.container_frame, mMagazineFragment, MAGAZINE_FRAGMENT).addToBackStack(MAGAZINE_FRAGMENT).commit();
                 break;
             case 3:
                 mMainToolbar.setTitle("Gallery");
-                if (mGalleryFragment != null)
-                    mFragmentManager.beginTransaction().replace(R.id.container_frame, mGalleryFragment, GALLERY_FRAGMENT).addToBackStack(GALLERY_FRAGMENT).commit();
-                else {
+                if (mGalleryFragment == null)
                     mGalleryFragment = new GalleryFragment();
-                    mFragmentManager.beginTransaction().add(R.id.container_frame, mGalleryFragment, GALLERY_FRAGMENT).addToBackStack(GALLERY_FRAGMENT).commit();
-                }
+                mFragmentManager.beginTransaction().replace(R.id.container_frame, mGalleryFragment, GALLERY_FRAGMENT).addToBackStack(GALLERY_FRAGMENT).commit();
                 break;
             case 4:
                 mMainToolbar.setTitle("Our Team");
-                if (mTeamFragment != null)
-                    mFragmentManager.beginTransaction().replace(R.id.container_frame, mTeamFragment, TEAM_FRAGMENT).addToBackStack(TEAM_FRAGMENT).commit();
-                else {
+                if (mTeamFragment == null)
                     mTeamFragment = new TeamFragment();
-                    mFragmentManager.beginTransaction().add(R.id.container_frame, mTeamFragment, TEAM_FRAGMENT).addToBackStack(TEAM_FRAGMENT).commit();
-                }
+                mFragmentManager.beginTransaction().replace(R.id.container_frame, mTeamFragment, TEAM_FRAGMENT).addToBackStack(TEAM_FRAGMENT).commit();
                 break;
             case 5:
                 mMainToolbar.setTitle("About Us");
-                if (mAboutUsFragment != null)
-                    mFragmentManager.beginTransaction().replace(R.id.container_frame, mAboutUsFragment, ABOUT_FRAGMENT).addToBackStack(ABOUT_FRAGMENT).commit();
-                else {
+                if (mAboutUsFragment == null)
                     mAboutUsFragment = new AboutUsFragment();
-                    mFragmentManager.beginTransaction().add(R.id.container_frame, mAboutUsFragment, ABOUT_FRAGMENT).addToBackStack(ABOUT_FRAGMENT).commit();
-                }
+                mFragmentManager.beginTransaction().replace(R.id.container_frame, mAboutUsFragment, ABOUT_FRAGMENT).addToBackStack(ABOUT_FRAGMENT).commit();
                 break;
             case 6:
                 mMainToolbar.setTitle("Contact Us");
-                if (mContactFragment != null)
-                    mFragmentManager.beginTransaction().replace(R.id.container_frame, mContactFragment, CONTACT_FRAGMENT).addToBackStack(CONTACT_FRAGMENT).commit();
-                else {
+                if (mContactFragment == null)
                     mContactFragment = new ContactFragment();
-                    mFragmentManager.beginTransaction().add(R.id.container_frame, mContactFragment, CONTACT_FRAGMENT).addToBackStack(CONTACT_FRAGMENT).commit();
-                }
+                mFragmentManager.beginTransaction().replace(R.id.container_frame, mContactFragment, CONTACT_FRAGMENT).addToBackStack(CONTACT_FRAGMENT).commit();
         }
 
 

@@ -25,8 +25,6 @@ public class TeamFragment extends Fragment {
     private List<Fragment> mList;
     private ViewPagerAdapter mViewPagerAdapter;
     private View view;
-
-
     public TeamFragment() {
         // Required empty public constructor
     }
@@ -48,7 +46,9 @@ public class TeamFragment extends Fragment {
         view = inflater.inflate(R.layout.team_fragment, container, false);
         mTabs = (SlidingTabLayout) view.findViewById(R.id.tabs_team_fragment);
         mViewPager = (ViewPager) view.findViewById(R.id.viewpage_team_fragment);
-        mViewPagerAdapter=new ViewPagerAdapter(getChildFragmentManager(), mList,getContext());
+        if (mViewPagerAdapter == null) {
+            mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), mList, getContext());
+        }
         mViewPager.setAdapter(mViewPagerAdapter);
         mTabs.setDistributeEvenly(true);
         mTabs.setViewPager(mViewPager);
