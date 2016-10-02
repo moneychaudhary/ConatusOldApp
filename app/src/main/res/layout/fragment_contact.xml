@@ -58,7 +58,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/website" />
+                android:src="@drawable/web" />
 
             <TextView
                 android:layout_width="0dp"
@@ -100,7 +100,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/facebook" />
+                android:src="@drawable/facebookbox" />
 
             <TextView
                 android:layout_width="0dp"

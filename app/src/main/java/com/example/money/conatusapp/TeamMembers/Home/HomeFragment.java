@@ -58,7 +58,11 @@ public class HomeFragment extends Fragment {
         ) {
             @Override
             protected void populateViewHolder(HomeViewHolder viewHolder, Post model, int position) {
-                Picasso.with(getActivity()).load(model.getImage()).resize(200, 150).into(viewHolder.image);
+
+                if (model.getDesc() == "null")
+                    viewHolder.expandableLayout.collapse();
+
+                Picasso.with(getActivity()).load(model.getImage()).resize(250, 180).into(viewHolder.image);
                 viewHolder.heading.setText(model.getTitle());
                 viewHolder.date.setText(model.getDate());
                 viewHolder.time.setText(model.getTime());

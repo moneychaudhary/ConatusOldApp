@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import com.example.money.conatusapp.Gallery.GalleryFragment;
 import com.example.money.conatusapp.NavigationDrawer.NavigationDrawerActivityListner;
 import com.example.money.conatusapp.NavigationDrawer.NavigationDrawerFragment;
 import com.example.money.conatusapp.TeamMembers.Home.HomeFragment;
@@ -51,8 +52,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerA
         ButterKnife.bind(this);
         setSupportActionBar(mMainToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mContactFragment = new ContactFragment();
-        mTeamFragment = new TeamFragment();
         mFragmentManager = getSupportFragmentManager();
         mHomeFragment = new HomeFragment();
         mFragmentManager.beginTransaction().add(R.id.container_frame, mHomeFragment, HOME_FRAGMENT).addToBackStack(HOME_FRAGMENT).commit();
@@ -65,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerA
 
     @Override
     public void onItemClickedInDrawer(int position) {
+
 
         switch (position) {
             case 0:
