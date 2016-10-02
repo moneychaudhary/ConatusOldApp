@@ -10,6 +10,7 @@ import android.view.Menu;
 
 import com.example.money.conatusapp.NavigationDrawer.NavigationDrawerActivityListner;
 import com.example.money.conatusapp.NavigationDrawer.NavigationDrawerFragment;
+import com.example.money.conatusapp.TeamMembers.Home.HomeFragment;
 import com.example.money.conatusapp.TeamMembers.TeamFragment;
 
 import butterknife.BindView;

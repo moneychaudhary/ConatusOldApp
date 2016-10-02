@@ -20,4 +20,5 @@ public class AnimationUtils {
         animationTranslationY.setDuration(1000);
         animationTranslationY.start();
     }
+
 }

@@ -58,7 +58,7 @@ public class CurrentTeamFragment extends Fragment {
                 viewHolder.memberBranch.setText(model.getBranch());
                 viewHolder.memberYear.setText(model.getYear() + "rd Year");
                 viewHolder.memberDomain.setText(model.getDomain());
-                Picasso.with(getActivity()).load(model.getImage()).noFade().resize(130, 130).into(viewHolder.memberImage);
+                Picasso.with(getActivity()).load(model.getImage()).noFade().resize(100, 100).into(viewHolder.memberImage);
                 if (position > previousPosition) {
                     AnimationUtils.animate(viewHolder, true);
                 } else {
