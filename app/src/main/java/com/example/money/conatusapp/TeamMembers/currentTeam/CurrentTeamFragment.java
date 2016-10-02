@@ -1,6 +1,8 @@
 package com.example.money.conatusapp.TeamMembers.currentTeam;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.money.conatusapp.Animations.AnimationUtils;
+import com.example.money.conatusapp.ImageDownloadActivty;
 import com.example.money.conatusapp.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +30,7 @@ public class CurrentTeamFragment extends Fragment {
     private DatabaseReference mDatabase;
     private int previousPosition = -1;
     private LinearLayoutManager mLinearLayoutManager;
+    private static Context sContext;
 
 
     public CurrentTeamFragment() {
@@ -39,6 +43,7 @@ public class CurrentTeamFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_current_team, container, false);
         mMembersList = (RecyclerView) view.findViewById(R.id.members_list);
+        sContext = getActivity();
         mLinearLayoutManager = new LinearLayoutManager(getContext());
         mMembersList.setLayoutManager(mLinearLayoutManager);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("members");
@@ -59,6 +64,7 @@ public class CurrentTeamFragment extends Fragment {
                 viewHolder.memberNameField.setText(model.getName());
                 viewHolder.memberBranch.setText(model.getBranch());
                 viewHolder.memberYear.setText(model.getYear() + "rd Year");
+                viewHolder.imageUrl = model.getImage();
                 viewHolder.memberDomain.setText(model.getDomain());
                 Picasso.with(getActivity()).load(model.getImage()).noFade().resize(120, 120).into(viewHolder.memberImage);
                 if (position > previousPosition) {
@@ -75,11 +81,12 @@ public class CurrentTeamFragment extends Fragment {
 
 
     public static class MemberViewHolder extends RecyclerView.ViewHolder {
-        public TextView memberNameField;
-        public TextView memberBranch;
-        public TextView memberYear;
-        public TextView memberDomain;
-        public CircleImageView memberImage;
+        private TextView memberNameField;
+        private TextView memberBranch;
+        private TextView memberYear;
+        private TextView memberDomain;
+        private CircleImageView memberImage;
+        private String imageUrl;
 
         public MemberViewHolder(View itemView) {
             super(itemView);
@@ -88,6 +95,13 @@ public class CurrentTeamFragment extends Fragment {
             memberYear = (TextView) itemView.findViewById(R.id.member_year);
             memberDomain = (TextView) itemView.findViewById(R.id.member_domain);
             memberImage = (CircleImageView) itemView.findViewById(R.id.member_image);
+            memberImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = ImageDownloadActivty.getImageDownloadIntent(sContext, imageUrl);
+                    sContext.startActivity(intent);
+                }
+            });
         }
     }
 

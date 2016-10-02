@@ -1,6 +1,8 @@
 package com.example.money.conatusapp.Gallery;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.money.conatusapp.ImageDownloadActivty;
 import com.example.money.conatusapp.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +28,7 @@ public class GalleryFragment extends Fragment {
     private RecyclerView mImageList;
     private DatabaseReference mDatabase;
     private LinearLayoutManager mLinearLayoutManager;
+    private static Context sContext;
 
 
     public GalleryFragment() {
@@ -41,6 +45,7 @@ public class GalleryFragment extends Fragment {
         mImageList.setLayoutManager(mLinearLayoutManager);
         mLinearLayoutManager.setReverseLayout(true);
         mLinearLayoutManager.setStackFromEnd(true);
+        sContext = getActivity();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("gallery");
         return view;
 
@@ -56,6 +61,7 @@ public class GalleryFragment extends Fragment {
 
             protected void populateViewHolder(final GalleryViewHolder viewHolder, OneImage model, int position) {
                 Picasso.with(getActivity()).load(model.getImage()).resize(400, 300).into(viewHolder.image);
+                viewHolder.imageUrl = model.getImage();
             }
         };
         mImageList.setAdapter(firebaseRecyclerAdapter);
@@ -64,11 +70,20 @@ public class GalleryFragment extends Fragment {
 
     public static class GalleryViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView image;
+        private ImageView image;
+        private String imageUrl;
 
         public GalleryViewHolder(View itemView) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.gallery_image_view);
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = ImageDownloadActivty.getImageDownloadIntent(sContext, imageUrl);
+                    sContext.startActivity(intent);
+
+                }
+            });
         }
     }
 }

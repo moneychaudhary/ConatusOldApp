@@ -1,6 +1,8 @@
 package com.example.money.conatusapp.TeamMembers.Home;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.money.conatusapp.ImageDownloadActivty;
 import com.example.money.conatusapp.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.github.aakira.expandablelayout.ExpandableLayout;
@@ -26,6 +29,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView mReyclerVIew;
     private DatabaseReference mDatabase;
     private LinearLayoutManager mLinearLayoutManager;
+    private static Context mContext;
 
 
     public HomeFragment() {
@@ -41,6 +45,7 @@ public class HomeFragment extends Fragment {
         mReyclerVIew = (RecyclerView) view.findViewById(R.id.home_list);
         mLinearLayoutManager = new LinearLayoutManager(getContext());
         mLinearLayoutManager.setReverseLayout(true);
+        mContext = getActivity();
         mLinearLayoutManager.setStackFromEnd(true);
         mReyclerVIew.setLayoutManager(mLinearLayoutManager);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("posts");
@@ -68,6 +73,7 @@ public class HomeFragment extends Fragment {
                 viewHolder.time.setText(model.getTime());
                 viewHolder.subHeading.setText(model.getSubhead());
                 viewHolder.contentView.setText(model.getDesc());
+                viewHolder.imageUrl = model.getImage();
 
             }
         };
@@ -77,13 +83,14 @@ public class HomeFragment extends Fragment {
     }
 
     public static class HomeViewHolder extends RecyclerView.ViewHolder {
-        public TextView heading;
-        public TextView date;
-        public TextView time;
-        public TextView subHeading;
-        public ImageView image;
-        public ExpandableLayout expandableLayout;
-        public TextView contentView;
+        private TextView heading;
+        private TextView date;
+        private TextView time;
+        private TextView subHeading;
+        private ImageView image;
+        private ExpandableLayout expandableLayout;
+        private TextView contentView;
+        private String imageUrl;
 
         public HomeViewHolder(View itemView) {
             super(itemView);
@@ -98,6 +105,14 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     expandableLayout.toggle();
+                }
+            });
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = ImageDownloadActivty.getImageDownloadIntent(mContext, imageUrl);
+                    mContext.startActivity(intent);
+
                 }
             });
         }
