@@ -26,6 +26,7 @@ public class CurrentTeamFragment extends Fragment {
     private RecyclerView mMembersList;
     private DatabaseReference mDatabase;
     private int previousPosition = -1;
+    private LinearLayoutManager mLinearLayoutManager;
 
 
     public CurrentTeamFragment() {
@@ -38,7 +39,8 @@ public class CurrentTeamFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_current_team, container, false);
         mMembersList = (RecyclerView) view.findViewById(R.id.members_list);
-        mMembersList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mLinearLayoutManager = new LinearLayoutManager(getContext());
+        mMembersList.setLayoutManager(mLinearLayoutManager);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("members");
         return view;
 
@@ -63,7 +65,7 @@ public class CurrentTeamFragment extends Fragment {
                     AnimationUtils.animate(viewHolder, true);
                 } else {
 
-                    AnimationUtils.animate(viewHolder, false);
+                    AnimationUtils.animate(viewHolder, true);
                 }
                 previousPosition = position;
             }

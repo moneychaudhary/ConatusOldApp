@@ -25,6 +25,7 @@ import com.squareup.picasso.Picasso;
 public class HomeFragment extends Fragment {
     private RecyclerView mReyclerVIew;
     private DatabaseReference mDatabase;
+    private LinearLayoutManager mLinearLayoutManager;
 
 
     public HomeFragment() {
@@ -38,7 +39,10 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mReyclerVIew = (RecyclerView) view.findViewById(R.id.home_list);
-        mReyclerVIew.setLayoutManager(new LinearLayoutManager(getContext()));
+        mLinearLayoutManager = new LinearLayoutManager(getContext());
+        mLinearLayoutManager.setReverseLayout(true);
+        mLinearLayoutManager.setStackFromEnd(true);
+        mReyclerVIew.setLayoutManager(mLinearLayoutManager);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("posts");
         return view;
     }
