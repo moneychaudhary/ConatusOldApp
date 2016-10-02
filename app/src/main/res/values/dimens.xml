@@ -6,4 +6,6 @@
     <dimen name="drawer_image_height">180dp</dimen>
     <dimen name="drawer_text_size">18sp</dimen>
     <dimen name="drawer_text_padding">5dp</dimen>
+    <dimen name="contacts_text_size">17sp</dimen>
+    <dimen name="padding_contact_text">5dp</dimen>
 </resources>

@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerA
         ButterKnife.bind(this);
         setSupportActionBar(mMainToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mContactFragment = new ContactFragment();
+        mTeamFragment = new TeamFragment();
         mFragmentManager = getSupportFragmentManager();
         mHomeFragment = new HomeFragment();
         mFragmentManager.beginTransaction().add(R.id.container_frame, mHomeFragment, HOME_FRAGMENT).addToBackStack(HOME_FRAGMENT).commit();

@@ -6,13 +6,13 @@
     android:background="@drawable/custom_background"
     android:clickable="true"
     android:orientation="horizontal"
-    android:layout_marginLeft="20dp"
     android:padding="10dp">
 
 
     <ImageView
         android:id="@+id/menu_icon_image"
         android:layout_width="0dp"
+        android:layout_marginLeft="23dp"
         android:layout_height="match_parent"
         android:layout_weight="1" />
 

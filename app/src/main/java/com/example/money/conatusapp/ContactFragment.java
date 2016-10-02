@@ -2,28 +2,57 @@ package com.example.money.conatusapp;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ContactFragment extends Fragment {
-
+    private SupportMapFragment mSupportMapFragment;
+    private GoogleMap mGoogleMaps;
 
     public ContactFragment() {
-        // Required empty public constructor
-    }
 
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_contact, container, false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mSupportMapFragment = new SupportMapFragment();
+        mSupportMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                mGoogleMaps = googleMap;
+                mGoogleMaps.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                mGoogleMaps.getUiSettings().setZoomControlsEnabled(true);
+                LatLng akg = new LatLng(28.676655, 77.500823);
+                mGoogleMaps.addMarker(new MarkerOptions().position(akg).title("Conatus")
+                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_location_on_black_24dp))).showInfoWindow();
+
+                mGoogleMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(akg, 17));
+
+            }
+        });
+
     }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_contact, container, false);
+
+        getChildFragmentManager().beginTransaction().replace(R.id.mapView, mSupportMapFragment).commit();
+        return view;
+    }
+
+
 
 }
