@@ -3,7 +3,9 @@ package com.example.money.conatusapp.Gallery;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,8 +17,12 @@ import android.widget.ImageView;
 import com.example.money.conatusapp.ImageDownloadActivty;
 import com.example.money.conatusapp.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 
@@ -27,8 +33,10 @@ public class GalleryFragment extends Fragment {
 
     private RecyclerView mImageList;
     private DatabaseReference mDatabase;
+    private StorageReference mStorageReference;
     private LinearLayoutManager mLinearLayoutManager;
     private static Context sContext;
+    private int lastPosition = -1;
 
 
     public GalleryFragment() {
@@ -41,15 +49,17 @@ public class GalleryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
         mImageList = (RecyclerView) view.findViewById(R.id.gallery_recycler_view);
-        mLinearLayoutManager = new LinearLayoutManager(getContext());
-        mImageList.setLayoutManager(mLinearLayoutManager);
-        mLinearLayoutManager.setReverseLayout(true);
+        mLinearLayoutManager = new LinearLayoutManager(sContext);
         mLinearLayoutManager.setStackFromEnd(true);
+        mLinearLayoutManager.setReverseLayout(true);
+        mImageList.setLayoutManager(mLinearLayoutManager);
         sContext = getActivity();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("gallery");
+        mStorageReference = FirebaseStorage.getInstance().getReference();
         return view;
 
     }
+
 
     @Override
     public void onStart() {
@@ -60,8 +70,20 @@ public class GalleryFragment extends Fragment {
                 mDatabase) {
 
             protected void populateViewHolder(final GalleryViewHolder viewHolder, OneImage model, int position) {
-                Picasso.with(getActivity()).load(model.getImage()).resize(400, 300).into(viewHolder.image);
+                mStorageReference.child(model.getImage()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.with(getActivity()).load(uri).resize(350, 250).into(viewHolder.image);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                    }
+                });
+
                 viewHolder.imageUrl = model.getImage();
+
             }
         };
         mImageList.setAdapter(firebaseRecyclerAdapter);

@@ -3,7 +3,9 @@ package com.example.money.conatusapp.TeamMembers.currentTeam;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,8 +18,12 @@ import com.example.money.conatusapp.Animations.AnimationUtils;
 import com.example.money.conatusapp.ImageDownloadActivty;
 import com.example.money.conatusapp.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -28,6 +34,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CurrentTeamFragment extends Fragment {
     private RecyclerView mMembersList;
     private DatabaseReference mDatabase;
+    private StorageReference mStorage;
     private int previousPosition = -1;
     private LinearLayoutManager mLinearLayoutManager;
     private static Context sContext;
@@ -47,6 +54,7 @@ public class CurrentTeamFragment extends Fragment {
         mLinearLayoutManager = new LinearLayoutManager(getContext());
         mMembersList.setLayoutManager(mLinearLayoutManager);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("members");
+        mStorage = FirebaseStorage.getInstance().getReference();
         return view;
 
     }
@@ -63,10 +71,21 @@ public class CurrentTeamFragment extends Fragment {
             protected void populateViewHolder(final MemberViewHolder viewHolder, Member model, int position) {
                 viewHolder.memberNameField.setText(model.getName());
                 viewHolder.memberBranch.setText(model.getBranch());
-                viewHolder.memberYear.setText(model.getYear() + "rd Year");
+                viewHolder.memberYear.setText(model.getYear());
                 viewHolder.imageUrl = model.getImage();
                 viewHolder.memberDomain.setText(model.getDomain());
-                Picasso.with(getActivity()).load(model.getImage()).noFade().resize(120, 120).into(viewHolder.memberImage);
+                mStorage.child(model.getImage()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.with(getActivity()).load(uri).noFade().resize(150, 150).into(viewHolder.memberImage);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                    }
+                });
                 if (position > previousPosition) {
                     AnimationUtils.animate(viewHolder, true);
                 } else {

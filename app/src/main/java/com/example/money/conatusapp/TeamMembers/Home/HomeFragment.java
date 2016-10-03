@@ -1,9 +1,9 @@
 package com.example.money.conatusapp.TeamMembers.Home;
 
 
-import android.content.Context;
-import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,12 +13,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.money.conatusapp.ImageDownloadActivty;
 import com.example.money.conatusapp.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.github.aakira.expandablelayout.ExpandableLayout;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 
@@ -28,8 +31,8 @@ import com.squareup.picasso.Picasso;
 public class HomeFragment extends Fragment {
     private RecyclerView mReyclerVIew;
     private DatabaseReference mDatabase;
+    private StorageReference mStorgae;
     private LinearLayoutManager mLinearLayoutManager;
-    private static Context mContext;
 
 
     public HomeFragment() {
@@ -45,10 +48,10 @@ public class HomeFragment extends Fragment {
         mReyclerVIew = (RecyclerView) view.findViewById(R.id.home_list);
         mLinearLayoutManager = new LinearLayoutManager(getContext());
         mLinearLayoutManager.setReverseLayout(true);
-        mContext = getActivity();
         mLinearLayoutManager.setStackFromEnd(true);
         mReyclerVIew.setLayoutManager(mLinearLayoutManager);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("posts");
+        mStorgae = FirebaseStorage.getInstance().getReference();
         return view;
     }
 
@@ -62,12 +65,23 @@ public class HomeFragment extends Fragment {
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(HomeViewHolder viewHolder, Post model, int position) {
+            protected void populateViewHolder(final HomeViewHolder viewHolder, final Post model, int position) {
 
-                if (model.getDesc() == "null")
+                if (model.getDesc().equals("null"))
                     viewHolder.expandableLayout.collapse();
 
-                Picasso.with(getActivity()).load(model.getImage()).resize(250, 180).into(viewHolder.image);
+                mStorgae.child(model.getImage()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.with(getActivity()).load(uri).resize(300, 200).into(viewHolder.image);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                    }
+                });
                 viewHolder.heading.setText(model.getTitle());
                 viewHolder.date.setText(model.getDate());
                 viewHolder.time.setText(model.getTime());
@@ -105,14 +119,6 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     expandableLayout.toggle();
-                }
-            });
-            image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = ImageDownloadActivty.getImageDownloadIntent(mContext, imageUrl);
-                    mContext.startActivity(intent);
-
                 }
             });
         }
