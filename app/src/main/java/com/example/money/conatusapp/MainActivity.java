@@ -2,17 +2,23 @@
 package com.example.money.conatusapp;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import com.example.money.conatusapp.Gallery.GalleryFragment;
+import com.example.money.conatusapp.Home.HomeFragment;
 import com.example.money.conatusapp.NavigationDrawer.NavigationDrawerActivityListner;
 import com.example.money.conatusapp.NavigationDrawer.NavigationDrawerFragment;
-import com.example.money.conatusapp.TeamMembers.Home.HomeFragment;
 import com.example.money.conatusapp.TeamMembers.TeamFragment;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,10 +57,17 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerA
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(mMainToolbar);
+
+        Picasso.Builder builder = new Picasso.Builder(this);
+        builder.downloader(new OkHttpDownloader(this, Integer.MAX_VALUE));
+        Picasso built = builder.build();
+        built.setIndicatorsEnabled(true);
+        built.setLoggingEnabled(true);
+//        Picasso.setSingletonInstance(built);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mFragmentManager = getSupportFragmentManager();
         mHomeFragment = new HomeFragment();
-        mFragmentManager.beginTransaction().add(R.id.container_frame, mHomeFragment, HOME_FRAGMENT).addToBackStack(HOME_FRAGMENT).commit();
+        mFragmentManager.beginTransaction().add(R.id.container_frame, mHomeFragment, HOME_FRAGMENT).commit();
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navFragment);
         mNavigationDrawerFragment.setOnNavigationDrawerActivityListner(this);
         mNavigationDrawerFragment.setUp(R.id.navFragment, (DrawerLayout) findViewById(R.id.main_page_drawer), mMainToolbar);
@@ -64,51 +77,68 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerA
 
     @Override
     public void onItemClickedInDrawer(int position) {
-
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        List<Fragment> fragmentList = mFragmentManager.getFragments();
+        for (Fragment fragment : fragmentList) {
+            transaction.hide(fragment);
+        }
 
         switch (position) {
             case 0:
                 mMainToolbar.setTitle("Conatus");
-                if (mHomeFragment != null)
+                if (mHomeFragment == null) {
                     mHomeFragment = new HomeFragment();
-                mFragmentManager.beginTransaction().replace(R.id.container_frame, mHomeFragment, HOME_FRAGMENT).addToBackStack(HOME_FRAGMENT).commit();
+                    transaction.add(R.id.container_frame, mHomeFragment, HOME_FRAGMENT);
+                } else {
+                    transaction.show(mFragmentManager.findFragmentByTag(HOME_FRAGMENT));
+                }
                 break;
             case 1:
                 mMainToolbar.setTitle("Events");
-                if (mEventsFragment == null)
+                if (mEventsFragment == null) {
                     mEventsFragment = new EventsFragment();
-                mFragmentManager.beginTransaction().replace(R.id.container_frame, mEventsFragment, EVENT_FRAGMENT).addToBackStack(EVENT_FRAGMENT).commit();
-                break;
-            case 2:
-                mMainToolbar.setTitle("Magazine");
-                if (mMagazineFragment == null)
-                    mMagazineFragment = new MagzineFragment();
-                mFragmentManager.beginTransaction().replace(R.id.container_frame, mMagazineFragment, MAGAZINE_FRAGMENT).addToBackStack(MAGAZINE_FRAGMENT).commit();
+                    transaction.add(R.id.container_frame, mEventsFragment, EVENT_FRAGMENT);
+                } else {
+                    transaction.show(mFragmentManager.findFragmentByTag(EVENT_FRAGMENT));
+                }
                 break;
             case 3:
                 mMainToolbar.setTitle("Gallery");
-                if (mGalleryFragment == null)
+                if (mGalleryFragment == null) {
                     mGalleryFragment = new GalleryFragment();
-                mFragmentManager.beginTransaction().replace(R.id.container_frame, mGalleryFragment, GALLERY_FRAGMENT).addToBackStack(GALLERY_FRAGMENT).commit();
+                    transaction.add(R.id.container_frame, mGalleryFragment, GALLERY_FRAGMENT);
+                } else {
+                    transaction.show(mFragmentManager.findFragmentByTag(GALLERY_FRAGMENT));
+                }
                 break;
             case 4:
                 mMainToolbar.setTitle("Our Team");
-                if (mTeamFragment == null)
+                if (mTeamFragment == null) {
                     mTeamFragment = new TeamFragment();
-                mFragmentManager.beginTransaction().replace(R.id.container_frame, mTeamFragment, TEAM_FRAGMENT).addToBackStack(TEAM_FRAGMENT).commit();
+                    transaction.add(R.id.container_frame, mTeamFragment, TEAM_FRAGMENT);
+                } else {
+                    transaction.show(mFragmentManager.findFragmentByTag(TEAM_FRAGMENT));
+                }
                 break;
             case 5:
                 mMainToolbar.setTitle("About Us");
-                if (mAboutUsFragment == null)
+                if (mAboutUsFragment == null) {
                     mAboutUsFragment = new AboutUsFragment();
-                mFragmentManager.beginTransaction().replace(R.id.container_frame, mAboutUsFragment, ABOUT_FRAGMENT).addToBackStack(ABOUT_FRAGMENT).commit();
+                    transaction.add(R.id.container_frame, mAboutUsFragment, ABOUT_FRAGMENT);
+                } else {
+                    transaction.show(mFragmentManager.findFragmentByTag(ABOUT_FRAGMENT));
+                }
                 break;
             case 6:
                 mMainToolbar.setTitle("Contact Us");
-                if (mContactFragment == null)
+                if (mContactFragment == null) {
                     mContactFragment = new ContactFragment();
-                mFragmentManager.beginTransaction().replace(R.id.container_frame, mContactFragment, CONTACT_FRAGMENT).addToBackStack(CONTACT_FRAGMENT).commit();
+                    transaction.add(R.id.container_frame, mContactFragment, CONTACT_FRAGMENT);
+                } else {
+                    transaction.show(mFragmentManager.findFragmentByTag(CONTACT_FRAGMENT));
+                }
         }
+        transaction.commit();
 
 
     }

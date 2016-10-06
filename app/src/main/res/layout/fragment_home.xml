@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
-    tools:context="com.example.money.conatusapp.TeamMembers.Home.HomeFragment">
+    tools:context=".Home.HomeFragment">
 
    <android.support.v7.widget.RecyclerView
        android:layout_width="match_parent"

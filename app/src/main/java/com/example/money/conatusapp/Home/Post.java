@@ -1,4 +1,4 @@
-package com.example.money.conatusapp.TeamMembers.Home;
+package com.example.money.conatusapp.Home;
 
 /**
  * Created by #money on 10/2/2016.

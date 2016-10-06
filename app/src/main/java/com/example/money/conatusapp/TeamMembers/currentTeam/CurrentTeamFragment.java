@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,19 +14,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.money.conatusapp.Animations.AnimationUtils;
+import com.example.money.conatusapp.Database.CurrentTeamMembersDatabase;
 import com.example.money.conatusapp.ImageDownloadActivty;
 import com.example.money.conatusapp.R;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,72 +38,107 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CurrentTeamFragment extends Fragment {
     private RecyclerView mMembersList;
     private DatabaseReference mDatabase;
-    private StorageReference mStorage;
+    private CurrentTeamMembersDatabase currentTeamMembersDatabase;
     private int previousPosition = -1;
     private LinearLayoutManager mLinearLayoutManager;
     private static Context sContext;
+    private static List<Member> memberList = new ArrayList<>();
+    private MemberAdapter mMemberAdapter;
+    private int count = 0;
 
 
     public CurrentTeamFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mLinearLayoutManager = new LinearLayoutManager(getContext());
+        currentTeamMembersDatabase = new CurrentTeamMembersDatabase(getActivity());
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("members");
+        mMemberAdapter = new MemberAdapter();
+        memberList = currentTeamMembersDatabase.getData();
+        sContext = getActivity();
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                memberList.removeAll(memberList);
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    final Member member = ds.getValue(Member.class);
+                    memberList.add(member);
+
+                }
+                mMemberAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_current_team, container, false);
         mMembersList = (RecyclerView) view.findViewById(R.id.members_list);
-        sContext = getActivity();
-        mLinearLayoutManager = new LinearLayoutManager(getContext());
-        mMembersList.setLayoutManager(mLinearLayoutManager);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("members");
-        mStorage = FirebaseStorage.getInstance().getReference();
+
+
+        if (count == 0) {
+            mMembersList.setLayoutManager(mLinearLayoutManager);
+            mMembersList.setAdapter(mMemberAdapter);
+            count++;
+        }
         return view;
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        previousPosition = -1;
-        final FirebaseRecyclerAdapter<Member, MemberViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Member, MemberViewHolder>(Member.class,
-                R.layout.member_list_layout,
-                MemberViewHolder.class,
-                mDatabase) {
-            @Override
-            protected void populateViewHolder(final MemberViewHolder viewHolder, Member model, int position) {
-                viewHolder.memberNameField.setText(model.getName());
-                viewHolder.memberBranch.setText(model.getBranch());
-                viewHolder.memberYear.setText(model.getYear());
-                viewHolder.imageUrl = model.getImage();
-                viewHolder.memberDomain.setText(model.getDomain());
-                mStorage.child(model.getImage()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Picasso.with(getActivity()).load(uri).noFade().resize(150, 150).into(viewHolder.memberImage);
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                    }
-                });
-                if (position > previousPosition) {
-                    AnimationUtils.animate(viewHolder, true);
-                } else {
+    private static class MemberAdapter extends RecyclerView.Adapter<MemberViewHolder> {
+        public MemberAdapter() {
+        }
 
-                    AnimationUtils.animate(viewHolder, false);
+        @Override
+        public MemberViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(sContext);
+            View view = inflater.inflate(R.layout.member_list_layout, parent, false);
+            return new MemberViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final MemberViewHolder viewHolder, final int position) {
+            viewHolder.memberNameField.setText(memberList.get(position).getName());
+            viewHolder.memberBranch.setText(memberList.get(position).getBranch());
+            viewHolder.memberYear.setText(memberList.get(position).getYear());
+            viewHolder.imageUrl = memberList.get(position).getImage();
+            viewHolder.memberDomain.setText(memberList.get(position).getDomain());
+            Picasso.with(sContext).load(Uri.parse(memberList.get(position).getImage())).noFade().networkPolicy(NetworkPolicy.OFFLINE).noFade().resize(150, 150).into(viewHolder.memberImage, new Callback() {
+                @Override
+                public void onSuccess() {
+
                 }
-                previousPosition = position;
-            }
-        };
-        mMembersList.setAdapter(firebaseRecyclerAdapter);
+
+                @Override
+                public void onError() {
+                    Picasso.with(sContext).load(Uri.parse(memberList.get(position).getImage())).noFade().into(viewHolder.memberImage);
+                }
+            });
+
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return memberList.size();
+        }
     }
 
 
-    public static class MemberViewHolder extends RecyclerView.ViewHolder {
+    private static class MemberViewHolder extends RecyclerView.ViewHolder {
         private TextView memberNameField;
         private TextView memberBranch;
         private TextView memberYear;
@@ -124,5 +163,11 @@ public class CurrentTeamFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        currentTeamMembersDatabase.insertData(memberList);
+
+    }
 }
 
