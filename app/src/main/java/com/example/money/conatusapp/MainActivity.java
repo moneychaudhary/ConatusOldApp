@@ -66,8 +66,9 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerA
 //        Picasso.setSingletonInstance(built);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mFragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
         mHomeFragment = new HomeFragment();
-        mFragmentManager.beginTransaction().add(R.id.container_frame, mHomeFragment, HOME_FRAGMENT).commit();
+        transaction.add(R.id.container_frame, mHomeFragment, HOME_FRAGMENT).commit();
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navFragment);
         mNavigationDrawerFragment.setOnNavigationDrawerActivityListner(this);
         mNavigationDrawerFragment.setUp(R.id.navFragment, (DrawerLayout) findViewById(R.id.main_page_drawer), mMainToolbar);
@@ -100,6 +101,15 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerA
                     transaction.add(R.id.container_frame, mEventsFragment, EVENT_FRAGMENT);
                 } else {
                     transaction.show(mFragmentManager.findFragmentByTag(EVENT_FRAGMENT));
+                }
+                break;
+            case 2:
+                mMainToolbar.setTitle("Magazines");
+                if (mMagazineFragment == null) {
+                    mMagazineFragment = new MagzineFragment();
+                    transaction.add(R.id.container_frame, mMagazineFragment, MAGAZINE_FRAGMENT);
+                } else {
+                    transaction.show(mFragmentManager.findFragmentByTag(MAGAZINE_FRAGMENT));
                 }
                 break;
             case 3:

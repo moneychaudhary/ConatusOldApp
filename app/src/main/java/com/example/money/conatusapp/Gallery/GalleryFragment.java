@@ -7,13 +7,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.devspark.progressfragment.ProgressFragment;
 import com.example.money.conatusapp.Database.GalleryDatabase;
 import com.example.money.conatusapp.ImageDownloadActivty;
 import com.example.money.conatusapp.R;
@@ -27,23 +28,25 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GalleryFragment extends Fragment {
+public class GalleryFragment extends ProgressFragment {
 
     private RecyclerView mImageList;
     private DatabaseReference mDatabase;
     private static Context sContext;
     private int lastPosition = -1;
     private GalleryDatabase galleryDatabase;
-    private LinearLayoutManager mLinearLayoutManager;
+    private GridLayoutManager mGridLayoutManager;
     private static List<OneImage> oneImageList = new ArrayList<>();
     private GalleryAdapter mGalleryAdapter;
     private int count = 0;
+    private View view;
 
 
     public GalleryFragment() {
@@ -51,16 +54,24 @@ public class GalleryFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setContentView(view);
+        setContentShown(false);
+        if (!oneImageList.isEmpty()) {
+            setContentShown(true);
+        }
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLinearLayoutManager = new LinearLayoutManager(getContext());
-        mLinearLayoutManager.setStackFromEnd(true);
-        mLinearLayoutManager.setReverseLayout(true);
+        mGridLayoutManager = (GridLayoutManager) new GridLayoutManager(getContext(), 2);
         galleryDatabase = new GalleryDatabase(getActivity());
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("gallery");
-        mGalleryAdapter = new GalleryAdapter();
-        oneImageList = galleryDatabase.getData();
         sContext = getActivity();
+        mGalleryAdapter = new GalleryAdapter();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("gallery");
+        oneImageList = galleryDatabase.getData();
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -70,6 +81,9 @@ public class GalleryFragment extends Fragment {
                     oneImageList.add(oneImage);
 
                 }
+                setContentShown(true);
+                Collections.reverse(oneImageList);
+                galleryDatabase.insertData(oneImageList);
                 mGalleryAdapter.notifyDataSetChanged();
             }
 
@@ -84,16 +98,16 @@ public class GalleryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
+        view = inflater.inflate(R.layout.fragment_gallery, container, false);
         mImageList = (RecyclerView) view.findViewById(R.id.gallery_recycler_view);
 
 
         if (count == 0) {
-            mImageList.setLayoutManager(mLinearLayoutManager);
+            mImageList.setLayoutManager(mGridLayoutManager);
             mImageList.setAdapter(mGalleryAdapter);
             count++;
         }
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
 
     }
 
@@ -113,14 +127,14 @@ public class GalleryFragment extends Fragment {
         public void onBindViewHolder(final GalleryViewHolder viewHolder, final int position) {
             viewHolder.imageUrl = oneImageList.get(position).getImage();
 
-            Picasso.with(sContext).load(Uri.parse(viewHolder.imageUrl)).networkPolicy(NetworkPolicy.OFFLINE).into(viewHolder.image, new Callback() {
+            Picasso.with(sContext).load(Uri.parse(viewHolder.imageUrl)).networkPolicy(NetworkPolicy.OFFLINE).resize(360, 360).centerCrop().noFade().into(viewHolder.image, new Callback() {
                 @Override
                 public void onSuccess() {
                 }
 
                 @Override
                 public void onError() {
-                    Picasso.with(sContext).load(Uri.parse(viewHolder.imageUrl)).into(viewHolder.image);
+                    Picasso.with(sContext).load(Uri.parse(viewHolder.imageUrl)).resize(360, 360).centerCrop().noFade().into(viewHolder.image);
 
                 }
             });
@@ -157,6 +171,5 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        galleryDatabase.insertData(oneImageList);
     }
 }

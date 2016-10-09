@@ -38,18 +38,16 @@ public class ContactFragment extends Fragment {
                 mGoogleMaps.addMarker(new MarkerOptions().position(akg).title("Conatus")
                         .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_location_on_black_24dp))).showInfoWindow();
 
-                mGoogleMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(akg, 17));
+                mGoogleMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(akg, 15));
 
             }
         });
-
+        getChildFragmentManager().beginTransaction().add(R.id.mapView, mSupportMapFragment).commit();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact, container, false);
-
-        getChildFragmentManager().beginTransaction().replace(R.id.mapView, mSupportMapFragment).commit();
         return view;
     }
 

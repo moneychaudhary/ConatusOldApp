@@ -7,7 +7,7 @@
     tools:context="com.example.money.conatusapp.TeamMembers.TeamFragment">
 
     <Tabs.SlidingTabLayout
-        android:background="@color/colorPrimary"
+        android:background="#e5e9e8"
         android:layout_width="match_parent"
         android:id="@+id/tabs_team_fragment"
         android:layout_height="wrap_content" />
