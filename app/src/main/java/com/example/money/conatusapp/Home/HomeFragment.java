@@ -2,7 +2,7 @@ package com.example.money.conatusapp.Home;
 
 
 import android.content.Context;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,6 +28,7 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -38,7 +39,6 @@ import java.util.List;
 public class HomeFragment extends ProgressFragment {
     private RecyclerView mReyclerVIew;
     private DatabaseReference mDatabase;
-    private HomeDatabase homeDatabase;
     private LinearLayoutManager mLinearLayoutManager;
     private static Context sContext;
     private static List<Post> postList = new ArrayList<>();
@@ -46,7 +46,7 @@ public class HomeFragment extends ProgressFragment {
     private int count = 0;
     private static HashSet<Integer> unfoldedIndexes = new HashSet<>();
     private View view;
-
+    private HomeDatabase mHomeDatabase;
 
 
     public HomeFragment() {
@@ -58,21 +58,18 @@ public class HomeFragment extends ProgressFragment {
         super.onActivityCreated(savedInstanceState);
         setContentView(view);
         setContentShown(false);
-        if (!postList.isEmpty()) {
-            setContentShown(true);
-        }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
-        mLinearLayoutManager.setReverseLayout(true);
-        mLinearLayoutManager.setStackFromEnd(true);
-        homeDatabase = new HomeDatabase(getActivity());
+        mHomeDatabase = new HomeDatabase(getActivity());
+        final HomeDatabaseInsertData homeDatabaseInsertData = new HomeDatabaseInsertData();
+        HomeDatabaseFetchData homeDatabaseFetchData = new HomeDatabaseFetchData();
+        homeDatabaseFetchData.execute();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("posts");
         mMemberAdapter = new HomeAdapter();
-        postList = homeDatabase.getData();
         sContext = getActivity();
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -84,7 +81,8 @@ public class HomeFragment extends ProgressFragment {
 
                 }
                 setContentShown(true);
-                homeDatabase.insertData(postList);
+                Collections.reverse(postList);
+                homeDatabaseInsertData.execute(postList);
                 mMemberAdapter.notifyDataSetChanged();
             }
 
@@ -112,6 +110,7 @@ public class HomeFragment extends ProgressFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+
     private static class HomeAdapter extends android.support.v7.widget.RecyclerView.Adapter<HomeViewHolder> {
         public HomeAdapter() {
         }
@@ -129,13 +128,15 @@ public class HomeFragment extends ProgressFragment {
                 viewHolder.mFoldedCell.getChildAt(0).setVisibility(View.VISIBLE);
                 viewHolder.mFoldedCell.getChildAt(1).setVisibility(View.GONE);
                 viewHolder.subHeading.setText(postList.get(position).getSubhead());
+                viewHolder.contentView.setVisibility(View.GONE);
             } else {
+                viewHolder.subHeading.setVisibility(View.GONE);
                 viewHolder.contentView.setText(postList.get(position).getDesc());
                 viewHolder.folded_heading.setText(postList.get(position).getTitle());
                 viewHolder.folded_date.setText(postList.get(position).getDate());
                 viewHolder.folded_time.setText(postList.get(position).getTime());
                 viewHolder.folded_subHeading.setText(postList.get(position).getSubhead());
-                Picasso.with(sContext).load(Uri.parse(postList.get(position).getImage())).networkPolicy(NetworkPolicy.OFFLINE).noFade().into(viewHolder.folded_image, new Callback() {
+                Picasso.with(sContext).load(postList.get(position).getImage()).networkPolicy(NetworkPolicy.OFFLINE).noFade().placeholder(R.drawable.picasso_placeholder).into(viewHolder.folded_image, new Callback() {
                     @Override
                     public void onSuccess() {
 
@@ -143,7 +144,7 @@ public class HomeFragment extends ProgressFragment {
 
                     @Override
                     public void onError() {
-                        Picasso.with(sContext).load(Uri.parse(postList.get(position).getImage())).noFade().into(viewHolder.folded_image);
+                        Picasso.with(sContext).load(postList.get(position).getImage()).noFade().placeholder(R.drawable.picasso_placeholder).into(viewHolder.folded_image);
                     }
                 });
             }
@@ -155,7 +156,7 @@ public class HomeFragment extends ProgressFragment {
             } else {
                 viewHolder.mFoldedCell.fold(true);
             }
-            Picasso.with(sContext).load(Uri.parse(postList.get(position).getImage())).networkPolicy(NetworkPolicy.OFFLINE).noFade().into(viewHolder.image, new Callback() {
+            Picasso.with(sContext).load(postList.get(position).getImage()).networkPolicy(NetworkPolicy.OFFLINE).noFade().placeholder(R.drawable.picasso_placeholder).into(viewHolder.image, new Callback() {
                 @Override
                 public void onSuccess() {
 
@@ -163,7 +164,7 @@ public class HomeFragment extends ProgressFragment {
 
                 @Override
                 public void onError() {
-                    Picasso.with(sContext).load(Uri.parse(postList.get(position).getImage())).noFade().into(viewHolder.image);
+                    Picasso.with(sContext).load(postList.get(position).getImage()).noFade().placeholder(R.drawable.picasso_placeholder).into(viewHolder.image);
                 }
             });
 
@@ -178,7 +179,6 @@ public class HomeFragment extends ProgressFragment {
                     }
                 }
             });
-
 
 
         }
@@ -197,6 +197,7 @@ public class HomeFragment extends ProgressFragment {
         public void registerUnfold(int position) {
             unfoldedIndexes.add(position);
         }
+
         @Override
         public int getItemCount() {
             return postList.size();
@@ -236,6 +237,31 @@ public class HomeFragment extends ProgressFragment {
 
         }
 
+    }
+
+    private class HomeDatabaseInsertData extends AsyncTask<List<Post>, Void, Void> {
+
+        @Override
+        protected Void doInBackground(List<Post>... post) {
+            mHomeDatabase.insertData(post[0]);
+            return null;
+        }
+    }
+
+    private class HomeDatabaseFetchData extends AsyncTask<Void, Void, List<Post>> {
+
+        @Override
+        protected List<Post> doInBackground(Void... params) {
+            return mHomeDatabase.getData();
+        }
+
+        @Override
+        protected void onPostExecute(List<Post> posts) {
+            postList = posts;
+            if (!postList.isEmpty()) {
+                setContentShown(true);
+            }
+        }
     }
 
     @Override

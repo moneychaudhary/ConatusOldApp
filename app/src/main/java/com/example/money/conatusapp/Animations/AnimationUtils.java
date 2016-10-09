@@ -17,7 +17,7 @@ public class AnimationUtils {
         } else {
             animationTranslationY = ObjectAnimator.ofFloat(holder.itemView, "translationY", -300, 0);
         }
-        animationTranslationY.setDuration(700);
+        animationTranslationY.setDuration(600);
         animationTranslationY.start();
     }
 

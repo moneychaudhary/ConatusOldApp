@@ -3,7 +3,7 @@ package com.example.money.conatusapp.TeamMembers.currentTeam;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -46,7 +46,7 @@ public class CurrentTeamFragment extends ProgressFragment {
     private static Context sContext;
     private static List<Member> memberList = new ArrayList<>();
     private MemberAdapter mMemberAdapter;
-    private int count = 0;
+    private static int count = 0;
     private View view;
 
 
@@ -59,9 +59,6 @@ public class CurrentTeamFragment extends ProgressFragment {
         super.onActivityCreated(savedInstanceState);
         setContentView(view);
         setContentShown(false);
-        if (!memberList.isEmpty()) {
-            setContentShown(true);
-        }
     }
 
     @Override
@@ -69,11 +66,13 @@ public class CurrentTeamFragment extends ProgressFragment {
         super.onCreate(savedInstanceState);
         mLinearLayoutManager = new LinearLayoutManager(getContext());
         currentTeamMembersDatabase = new CurrentTeamMembersDatabase(getActivity());
+        CurrentTeamFetchData currentTeamFetchData = new CurrentTeamFetchData();
+        currentTeamFetchData.execute();
+        final CurrentTeamInsertData currentTeamInsertData = new CurrentTeamInsertData();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("members");
         sContext = getActivity();
 
         mMemberAdapter = new MemberAdapter();
-        memberList = currentTeamMembersDatabase.getData();
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -84,7 +83,7 @@ public class CurrentTeamFragment extends ProgressFragment {
 
                 }
                 setContentShown(true);
-                currentTeamMembersDatabase.insertData(memberList);
+                currentTeamInsertData.execute(memberList);
                 mMemberAdapter.notifyDataSetChanged();
             }
 
@@ -133,7 +132,7 @@ public class CurrentTeamFragment extends ProgressFragment {
             viewHolder.memberYear.setText(memberList.get(position).getYear());
             viewHolder.imageUrl = memberList.get(position).getImage();
             viewHolder.memberDomain.setText(memberList.get(position).getDomain());
-            Picasso.with(sContext).load(Uri.parse(memberList.get(position).getImage())).noFade().networkPolicy(NetworkPolicy.OFFLINE).noFade().resize(150, 150).into(viewHolder.memberImage, new Callback() {
+            Picasso.with(sContext).load(memberList.get(position).getImage()).noFade().networkPolicy(NetworkPolicy.OFFLINE).noFade().resize(150, 150).placeholder(R.drawable.picasso_placeholder).into(viewHolder.memberImage, new Callback() {
                 @Override
                 public void onSuccess() {
 
@@ -141,13 +140,15 @@ public class CurrentTeamFragment extends ProgressFragment {
 
                 @Override
                 public void onError() {
-                    Picasso.with(sContext).load(Uri.parse(memberList.get(position).getImage())).noFade().into(viewHolder.memberImage);
+                    Picasso.with(sContext).load(memberList.get(position).getImage()).noFade().placeholder(R.drawable.picasso_placeholder).into(viewHolder.memberImage);
                 }
             });
             if (position > previousPosition)
                 AnimationUtils.animate(viewHolder, true);
             else
                 AnimationUtils.animate(viewHolder, false);
+
+            previousPosition = position;
 
 
         }
@@ -184,6 +185,30 @@ public class CurrentTeamFragment extends ProgressFragment {
             });
         }
 
+    }
+
+    private class CurrentTeamInsertData extends AsyncTask<List<Member>, Void, Void> {
+
+        @Override
+        protected Void doInBackground(List<Member>... params) {
+            currentTeamMembersDatabase.insertData(params[0]);
+            return null;
+        }
+    }
+
+    private class CurrentTeamFetchData extends AsyncTask<Void, Void, List<Member>> {
+
+        @Override
+        protected List<Member> doInBackground(Void... params) {
+            return currentTeamMembersDatabase.getData();
+        }
+
+        @Override
+        protected void onPostExecute(List<Member> list) {
+            memberList = list;
+            if (!memberList.isEmpty())
+                setContentShown(true);
+        }
     }
 
     @Override

@@ -8,7 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class SplashScreen extends AppCompatActivity {
-    private static final int DELAY_TIME = 3000;
+    private static final int DELAY_TIME = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -11,22 +11,25 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
         android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/member_image"
             android:layout_width="130dp"
             android:layout_height="130dp"
+            android:layout_gravity="center"
             android:layout_margin="15dp"
-            app:civ_border_color="#2b2a2a"
-            app:civ_border_width="2dp" />
+            app:civ_border_color="#363636"
+            app:civ_border_width="1dp" />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:layout_gravity="center"
             android:orientation="vertical"
             android:padding="5dp">
 
@@ -34,29 +37,30 @@
                 android:id="@+id/member_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="2dp"
+                android:padding="1dp"
+                android:textStyle="bold"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/member_domain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="2dp"
-                android:textSize="18sp" />
+                android:padding="1dp"
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/member_branch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="2dp"
-                android:textSize="18sp" />
+                android:padding="1dp"
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/member_year"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="2dp"
-                android:textSize="18sp" />
+                android:padding="1dp"
+                android:textSize="17sp" />
 
 
         </LinearLayout>

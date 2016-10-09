@@ -9,8 +9,6 @@ import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.webkit.MimeTypeMap;
-import android.webkit.URLUtil;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Callback;
@@ -34,34 +32,33 @@ public class ImageDownloadActivty extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DownloadManager.Request request = new DownloadManager.Request(Uri.parse(mUrl));
-                        request.setTitle("Image Download");
-                        request.setDescription("Image is being downloaded.....");
-                        request.allowScanningByMediaScanner();
-                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                String name = URLUtil.guessFileName(mUrl, null, MimeTypeMap.getFileExtensionFromUrl("http://assets.barcroftmedia.com.s3-website-eu-west-1.amazonaws.com/assets/images/recent-images-11.jpg"));
-                        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name);
-                        DownloadManager manager = (DownloadManager) sContext.getSystemService(Context.DOWNLOAD_SERVICE);
-                        manager.enqueue(request);
+                request.setTitle("Image Download");
+                request.setDescription("Image is being downloaded.....");
+                request.allowScanningByMediaScanner();
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                String name = mUrl.substring(mUrl.length() - 12, mUrl.length()) + ".jpeg";
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name);
+                DownloadManager manager = (DownloadManager) sContext.getSystemService(Context.DOWNLOAD_SERVICE);
+                manager.enqueue(request);
             }
         });
         Intent intent = getIntent();
         mUrl = intent.getStringExtra(IMAGE_URL);
         ;
-        Picasso.with(sContext).load(Uri.parse(mUrl)).networkPolicy(NetworkPolicy.OFFLINE).into(mImageView, new Callback() {
+        Picasso.with(sContext).load(mUrl).networkPolicy(NetworkPolicy.OFFLINE).into(mImageView, new Callback() {
             @Override
             public void onSuccess() {
-                    }
+            }
 
-                    @Override
-                    public void onError() {
-                        Picasso.with(sContext).load(Uri.parse(mUrl)).into(mImageView);
+            @Override
+            public void onError() {
+                Picasso.with(sContext).load(mUrl).into(mImageView);
 
-                    }
-                });
+            }
+        });
 
 
     }
-
 
 
     public static Intent getImageDownloadIntent(Context context, String imageurl) {

@@ -3,7 +3,7 @@ package com.example.money.conatusapp.Gallery;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -40,7 +40,6 @@ public class GalleryFragment extends ProgressFragment {
     private RecyclerView mImageList;
     private DatabaseReference mDatabase;
     private static Context sContext;
-    private int lastPosition = -1;
     private GalleryDatabase galleryDatabase;
     private GridLayoutManager mGridLayoutManager;
     private static List<OneImage> oneImageList = new ArrayList<>();
@@ -58,9 +57,6 @@ public class GalleryFragment extends ProgressFragment {
         super.onActivityCreated(savedInstanceState);
         setContentView(view);
         setContentShown(false);
-        if (!oneImageList.isEmpty()) {
-            setContentShown(true);
-        }
     }
 
     @Override
@@ -68,10 +64,12 @@ public class GalleryFragment extends ProgressFragment {
         super.onCreate(savedInstanceState);
         mGridLayoutManager = (GridLayoutManager) new GridLayoutManager(getContext(), 2);
         galleryDatabase = new GalleryDatabase(getActivity());
+        GalleryDatabaseFetchData galleryDatabaseFetchData = new GalleryDatabaseFetchData();
+        galleryDatabaseFetchData.execute();
+        final GalleryDatabaseInsertData galleryDatabaseInsertData = new GalleryDatabaseInsertData();
         sContext = getActivity();
         mGalleryAdapter = new GalleryAdapter();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("gallery");
-        oneImageList = galleryDatabase.getData();
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -83,7 +81,7 @@ public class GalleryFragment extends ProgressFragment {
                 }
                 setContentShown(true);
                 Collections.reverse(oneImageList);
-                galleryDatabase.insertData(oneImageList);
+                galleryDatabaseInsertData.execute(oneImageList);
                 mGalleryAdapter.notifyDataSetChanged();
             }
 
@@ -127,14 +125,14 @@ public class GalleryFragment extends ProgressFragment {
         public void onBindViewHolder(final GalleryViewHolder viewHolder, final int position) {
             viewHolder.imageUrl = oneImageList.get(position).getImage();
 
-            Picasso.with(sContext).load(Uri.parse(viewHolder.imageUrl)).networkPolicy(NetworkPolicy.OFFLINE).resize(360, 360).centerCrop().noFade().into(viewHolder.image, new Callback() {
+            Picasso.with(sContext).load(viewHolder.imageUrl).networkPolicy(NetworkPolicy.OFFLINE).resize(360, 360).centerCrop().noFade().into(viewHolder.image, new Callback() {
                 @Override
                 public void onSuccess() {
                 }
 
                 @Override
                 public void onError() {
-                    Picasso.with(sContext).load(Uri.parse(viewHolder.imageUrl)).resize(360, 360).centerCrop().noFade().into(viewHolder.image);
+                    Picasso.with(sContext).load(viewHolder.imageUrl).resize(360, 360).centerCrop().noFade().into(viewHolder.image);
 
                 }
             });
@@ -165,6 +163,31 @@ public class GalleryFragment extends ProgressFragment {
 
                 }
             });
+        }
+    }
+
+    private class GalleryDatabaseInsertData extends AsyncTask<List<OneImage>, Void, Void> {
+
+        @Override
+        protected Void doInBackground(List<OneImage>... params) {
+            galleryDatabase.insertData(params[0]);
+            return null;
+        }
+    }
+
+    private class GalleryDatabaseFetchData extends AsyncTask<Void, Void, List<OneImage>> {
+
+        @Override
+        protected List<OneImage> doInBackground(Void... params) {
+            return galleryDatabase.getData();
+        }
+
+        @Override
+        protected void onPostExecute(List<OneImage> oneImages) {
+            oneImageList = oneImages;
+            if (!oneImages.isEmpty()) {
+                setContentShown(true);
+            }
         }
     }
 

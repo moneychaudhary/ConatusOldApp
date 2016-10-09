@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerA
         Picasso built = builder.build();
         built.setIndicatorsEnabled(true);
         built.setLoggingEnabled(true);
-//        Picasso.setSingletonInstance(built);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mFragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = mFragmentManager.beginTransaction();

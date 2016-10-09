@@ -14,6 +14,8 @@
 
         <include
             android:id="@+id/mainpage_toolbar "
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             layout="@layout/toolbar_mainpage" />
 
         <FrameLayout

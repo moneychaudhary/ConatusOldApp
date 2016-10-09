@@ -24,6 +24,7 @@ public class TeamFragment extends Fragment {
     private List<Fragment> mList;
     private ViewPagerAdapter mViewPagerAdapter;
     private View view;
+
     public TeamFragment() {
         // Required empty public constructor
     }
@@ -53,7 +54,6 @@ public class TeamFragment extends Fragment {
         mTabs.setViewPager(mViewPager);
         return view;
     }
-
 
 
 }
