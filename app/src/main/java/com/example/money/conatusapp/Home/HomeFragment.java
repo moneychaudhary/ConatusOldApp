@@ -17,19 +17,17 @@ import android.widget.TextView;
 import com.devspark.progressfragment.ProgressFragment;
 import com.example.money.conatusapp.Database.HomeDatabase;
 import com.example.money.conatusapp.R;
+import com.github.aakira.expandablelayout.ExpandableLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.ramotion.foldingcell.FoldingCell;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 
@@ -44,7 +42,6 @@ public class HomeFragment extends ProgressFragment {
     private static List<Post> postList = new ArrayList<>();
     private HomeAdapter mMemberAdapter;
     private int count = 0;
-    private static HashSet<Integer> unfoldedIndexes = new HashSet<>();
     private View view;
     private HomeDatabase mHomeDatabase;
 
@@ -65,9 +62,7 @@ public class HomeFragment extends ProgressFragment {
         super.onCreate(savedInstanceState);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mHomeDatabase = new HomeDatabase(getActivity());
-        final HomeDatabaseInsertData homeDatabaseInsertData = new HomeDatabaseInsertData();
-        HomeDatabaseFetchData homeDatabaseFetchData = new HomeDatabaseFetchData();
-        homeDatabaseFetchData.execute();
+        new HomeDatabaseFetchData().execute();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("posts");
         mMemberAdapter = new HomeAdapter();
         sContext = getActivity();
@@ -77,13 +72,13 @@ public class HomeFragment extends ProgressFragment {
                 postList.removeAll(postList);
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Post post = ds.getValue(Post.class);
-                    postList.add(post);
+                    postList.add(0, post);
 
                 }
-                setContentShown(true);
-                Collections.reverse(postList);
-                homeDatabaseInsertData.execute(postList);
                 mMemberAdapter.notifyDataSetChanged();
+                new HomeDatabaseInsertData().execute(postList);
+                setContentShown(true);
+
             }
 
             @Override
@@ -100,6 +95,10 @@ public class HomeFragment extends ProgressFragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
         mReyclerVIew = (RecyclerView) view.findViewById(R.id.home_list);
+        mReyclerVIew.setHasFixedSize(true);
+        mReyclerVIew.setItemViewCacheSize(20);
+        mReyclerVIew.setDrawingCacheEnabled(true);
+        mReyclerVIew.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
 
         if (count == 0) {
@@ -124,39 +123,12 @@ public class HomeFragment extends ProgressFragment {
 
         @Override
         public void onBindViewHolder(final HomeViewHolder viewHolder, final int position) {
-            if (postList.get(position).getDesc().equals("null")) {
-                viewHolder.mFoldedCell.getChildAt(0).setVisibility(View.VISIBLE);
-                viewHolder.mFoldedCell.getChildAt(1).setVisibility(View.GONE);
-                viewHolder.subHeading.setText(postList.get(position).getSubhead());
-                viewHolder.contentView.setVisibility(View.GONE);
-            } else {
-                viewHolder.subHeading.setVisibility(View.GONE);
-                viewHolder.contentView.setText(postList.get(position).getDesc());
-                viewHolder.folded_heading.setText(postList.get(position).getTitle());
-                viewHolder.folded_date.setText(postList.get(position).getDate());
-                viewHolder.folded_time.setText(postList.get(position).getTime());
-                viewHolder.folded_subHeading.setText(postList.get(position).getSubhead());
-                Picasso.with(sContext).load(postList.get(position).getImage()).networkPolicy(NetworkPolicy.OFFLINE).noFade().placeholder(R.drawable.picasso_placeholder).into(viewHolder.folded_image, new Callback() {
-                    @Override
-                    public void onSuccess() {
-
-                    }
-
-                    @Override
-                    public void onError() {
-                        Picasso.with(sContext).load(postList.get(position).getImage()).noFade().placeholder(R.drawable.picasso_placeholder).into(viewHolder.folded_image);
-                    }
-                });
-            }
             viewHolder.heading.setText(postList.get(position).getTitle());
+            viewHolder.subHeading.setText(postList.get(position).getSubhead());
+            viewHolder.contentView.setText(postList.get(position).getDesc());
             viewHolder.date.setText(postList.get(position).getDate());
             viewHolder.time.setText(postList.get(position).getTime());
-            if (unfoldedIndexes.contains(position)) {
-                viewHolder.mFoldedCell.unfold(true);
-            } else {
-                viewHolder.mFoldedCell.fold(true);
-            }
-            Picasso.with(sContext).load(postList.get(position).getImage()).networkPolicy(NetworkPolicy.OFFLINE).noFade().placeholder(R.drawable.picasso_placeholder).into(viewHolder.image, new Callback() {
+            Picasso.with(sContext).load(postList.get(position).getImage()).networkPolicy(NetworkPolicy.OFFLINE).fit().noFade().into(viewHolder.image, new Callback() {
                 @Override
                 public void onSuccess() {
 
@@ -164,39 +136,24 @@ public class HomeFragment extends ProgressFragment {
 
                 @Override
                 public void onError() {
-                    Picasso.with(sContext).load(postList.get(position).getImage()).noFade().placeholder(R.drawable.picasso_placeholder).into(viewHolder.image);
+                    Picasso.with(sContext).load(postList.get(position).getImage()).fit().noFade().into(viewHolder.image);
                 }
             });
 
 
-            viewHolder.mFoldedCell.setOnClickListener(new View.OnClickListener() {
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    if (!postList.get(position).getDesc().equals("null")) {
-                        viewHolder.mFoldedCell.toggle(false);
-                        registerToggle(position);
-                    }
+                    if (postList.get(position).getDesc().toString().length() > 10)
+                        viewHolder.mExpandableLayout.toggle();
+
                 }
             });
 
 
         }
 
-        public void registerToggle(int position) {
-            if (unfoldedIndexes.contains(position))
-                registerFold(position);
-            else
-                registerUnfold(position);
-        }
-
-        public void registerFold(int position) {
-            unfoldedIndexes.remove(position);
-        }
-
-        public void registerUnfold(int position) {
-            unfoldedIndexes.add(position);
-        }
 
         @Override
         public int getItemCount() {
@@ -207,34 +164,23 @@ public class HomeFragment extends ProgressFragment {
 
     public static class HomeViewHolder extends RecyclerView.ViewHolder {
         private TextView heading;
-        private TextView folded_heading;
         private TextView date;
-        private TextView folded_date;
         private TextView time;
-        private TextView folded_time;
         private TextView subHeading;
-        private TextView folded_subHeading;
         private ImageView image;
-        private ImageView folded_image;
         private TextView contentView;
-        private FoldingCell mFoldedCell;
+        private ExpandableLayout mExpandableLayout;
 
 
         public HomeViewHolder(View itemView) {
             super(itemView);
             heading = (TextView) itemView.findViewById(R.id.heading);
-            folded_heading = (TextView) itemView.findViewById(R.id.folded_heading);
             date = (TextView) itemView.findViewById(R.id.date);
-            folded_date = (TextView) itemView.findViewById(R.id.folded_date);
             time = (TextView) itemView.findViewById(R.id.time);
-            folded_time = (TextView) itemView.findViewById(R.id.folded_time);
             subHeading = (TextView) itemView.findViewById(R.id.subheading);
-            folded_subHeading = (TextView) itemView.findViewById(R.id.folded_subheading);
             image = (ImageView) itemView.findViewById(R.id.article_image);
-            folded_image = (ImageView) itemView.findViewById(R.id.folded_image);
-            mFoldedCell = (FoldingCell) itemView.findViewById(R.id.folding_cell);
+            mExpandableLayout = (ExpandableLayout) itemView.findViewById(R.id.expandable_content);
             contentView = (TextView) itemView.findViewById(R.id.articel_content_field);
-
         }
 
     }

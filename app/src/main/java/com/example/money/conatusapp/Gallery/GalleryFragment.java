@@ -28,7 +28,6 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -64,9 +63,7 @@ public class GalleryFragment extends ProgressFragment {
         super.onCreate(savedInstanceState);
         mGridLayoutManager = (GridLayoutManager) new GridLayoutManager(getContext(), 2);
         galleryDatabase = new GalleryDatabase(getActivity());
-        GalleryDatabaseFetchData galleryDatabaseFetchData = new GalleryDatabaseFetchData();
-        galleryDatabaseFetchData.execute();
-        final GalleryDatabaseInsertData galleryDatabaseInsertData = new GalleryDatabaseInsertData();
+        new GalleryDatabaseFetchData().execute();
         sContext = getActivity();
         mGalleryAdapter = new GalleryAdapter();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("gallery");
@@ -76,13 +73,13 @@ public class GalleryFragment extends ProgressFragment {
                 oneImageList.removeAll(oneImageList);
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     OneImage oneImage = ds.getValue(OneImage.class);
-                    oneImageList.add(oneImage);
+                    oneImageList.add(0, oneImage);
 
                 }
-                setContentShown(true);
-                Collections.reverse(oneImageList);
-                galleryDatabaseInsertData.execute(oneImageList);
                 mGalleryAdapter.notifyDataSetChanged();
+                new GalleryDatabaseInsertData().execute(oneImageList);
+                setContentShown(true);
+
             }
 
             @Override
@@ -98,6 +95,11 @@ public class GalleryFragment extends ProgressFragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_gallery, container, false);
         mImageList = (RecyclerView) view.findViewById(R.id.gallery_recycler_view);
+        mImageList.setHasFixedSize(true);
+        mImageList.setItemViewCacheSize(20);
+        mImageList.setDrawingCacheEnabled(true);
+        mImageList.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
 
 
         if (count == 0) {
@@ -125,14 +127,14 @@ public class GalleryFragment extends ProgressFragment {
         public void onBindViewHolder(final GalleryViewHolder viewHolder, final int position) {
             viewHolder.imageUrl = oneImageList.get(position).getImage();
 
-            Picasso.with(sContext).load(viewHolder.imageUrl).networkPolicy(NetworkPolicy.OFFLINE).resize(360, 360).centerCrop().noFade().into(viewHolder.image, new Callback() {
+            Picasso.with(sContext).load(viewHolder.imageUrl).networkPolicy(NetworkPolicy.OFFLINE).fit().centerCrop().noFade().into(viewHolder.image, new Callback() {
                 @Override
                 public void onSuccess() {
                 }
 
                 @Override
                 public void onError() {
-                    Picasso.with(sContext).load(viewHolder.imageUrl).resize(360, 360).centerCrop().noFade().into(viewHolder.image);
+                    Picasso.with(sContext).load(viewHolder.imageUrl).fit().centerCrop().noFade().into(viewHolder.image);
 
                 }
             });
@@ -194,5 +196,7 @@ public class GalleryFragment extends ProgressFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+
     }
 }

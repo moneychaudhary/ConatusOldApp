@@ -66,9 +66,7 @@ public class CurrentTeamFragment extends ProgressFragment {
         super.onCreate(savedInstanceState);
         mLinearLayoutManager = new LinearLayoutManager(getContext());
         currentTeamMembersDatabase = new CurrentTeamMembersDatabase(getActivity());
-        CurrentTeamFetchData currentTeamFetchData = new CurrentTeamFetchData();
-        currentTeamFetchData.execute();
-        final CurrentTeamInsertData currentTeamInsertData = new CurrentTeamInsertData();
+        new CurrentTeamFetchData().execute();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("members");
         sContext = getActivity();
 
@@ -82,9 +80,10 @@ public class CurrentTeamFragment extends ProgressFragment {
                     memberList.add(member);
 
                 }
-                setContentShown(true);
-                currentTeamInsertData.execute(memberList);
                 mMemberAdapter.notifyDataSetChanged();
+                new CurrentTeamInsertData().execute(memberList);
+                setContentShown(true);
+
             }
 
             @Override
@@ -101,8 +100,7 @@ public class CurrentTeamFragment extends ProgressFragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_current_team, container, false);
         mMembersList = (RecyclerView) view.findViewById(R.id.members_list);
-
-
+        mMembersList.setHasFixedSize(true);
         if (count == 0) {
             mMembersList.setLayoutManager(mLinearLayoutManager);
             mMembersList.setAdapter(mMemberAdapter);
@@ -132,7 +130,7 @@ public class CurrentTeamFragment extends ProgressFragment {
             viewHolder.memberYear.setText(memberList.get(position).getYear());
             viewHolder.imageUrl = memberList.get(position).getImage();
             viewHolder.memberDomain.setText(memberList.get(position).getDomain());
-            Picasso.with(sContext).load(memberList.get(position).getImage()).noFade().networkPolicy(NetworkPolicy.OFFLINE).noFade().resize(150, 150).placeholder(R.drawable.picasso_placeholder).into(viewHolder.memberImage, new Callback() {
+            Picasso.with(sContext).load(memberList.get(position).getImage()).noFade().networkPolicy(NetworkPolicy.OFFLINE).noFade().fit().into(viewHolder.memberImage, new Callback() {
                 @Override
                 public void onSuccess() {
 
@@ -140,7 +138,7 @@ public class CurrentTeamFragment extends ProgressFragment {
 
                 @Override
                 public void onError() {
-                    Picasso.with(sContext).load(memberList.get(position).getImage()).noFade().placeholder(R.drawable.picasso_placeholder).into(viewHolder.memberImage);
+                    Picasso.with(sContext).load(memberList.get(position).getImage()).noFade().fit().into(viewHolder.memberImage);
                 }
             });
             if (position > previousPosition)
@@ -214,6 +212,7 @@ public class CurrentTeamFragment extends ProgressFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
 
     }
 }
